@@ -285,10 +285,11 @@ abstract class CustomRenderSliverPersistentHeader extends RenderSliver
   bool hitTestChildren(SliverHitTestResult result,
       {required double mainAxisPosition, required double crossAxisPosition}) {
     assert(geometry!.hitTestExtent > 0.0);
-    if (child != null)
+    if (child != null) {
       return hitTestBoxChild(BoxHitTestResult.wrap(result), child!,
           mainAxisPosition: mainAxisPosition,
           crossAxisPosition: crossAxisPosition);
+    }
     return false;
   }
 
@@ -554,7 +555,7 @@ abstract class CustomRenderSliverFloatingPersistentHeader
           child: child,
           stretchConfiguration: stretchConfiguration,
         ) {
-    _controller?.addListener(animationChange);
+    //_controller?.addListener(animationChange);
   }
 
   late Animation<double> _animation;
@@ -568,6 +569,12 @@ abstract class CustomRenderSliverFloatingPersistentHeader
   // Distance from our leading edge to the child's leading edge, in the axis
   // direction. Negative if we're scrolled off the top.
   double? _childPosition;
+
+  @override
+  void attach(PipelineOwner owner) {
+    _controller?.addListener(animationChange);
+    super.attach(owner);
+  }
 
   @override
   void detach() {
@@ -672,8 +679,13 @@ abstract class CustomRenderSliverFloatingPersistentHeader
     //   return;
     if (direction == ScrollDirection.forward &&
         _effectiveScrollOffset! <= maxExtent - floatingExtent) return;
+
+    //debugPrint('_effectiveScrollOffset $_effectiveScrollOffset $maxExtent');
+
     if (direction == ScrollDirection.reverse &&
-        _effectiveScrollOffset! >= maxExtent - minExtent) return;
+        _effectiveScrollOffset! >= maxExtent - minExtent) {
+      return;
+    }
 
     /// Joan: If _effectiveScrollOffset and scrollOfsset is equal, header does not overlap body, therefore no animation should be started.
     final SliverConstraints constraints = this.constraints;

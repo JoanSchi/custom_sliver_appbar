@@ -83,25 +83,25 @@ class RePositionReSizeRender extends RenderShiftedBox {
     if (child.parentData is! BoxParentData) child.parentData = BoxParentData();
   }
 
-  @override
-  double computeMinIntrinsicWidth(double height) {
-    return super.computeMinIntrinsicWidth(height);
-  }
+  // @override
+  // double computeMinIntrinsicWidth(double height) {
+  //   return super.computeMinIntrinsicWidth(height);
+  // }
 
-  @override
-  double computeMaxIntrinsicWidth(double height) {
-    return super.computeMaxIntrinsicWidth(height);
-  }
+  // @override
+  // double computeMaxIntrinsicWidth(double height) {
+  //   return super.computeMaxIntrinsicWidth(height);
+  // }
 
-  @override
-  double computeMinIntrinsicHeight(double width) {
-    return super.computeMinIntrinsicHeight(width);
-  }
+  // @override
+  // double computeMinIntrinsicHeight(double width) {
+  //   return super.computeMinIntrinsicHeight(width);
+  // }
 
-  @override
-  double computeMaxIntrinsicHeight(double width) {
-    return super.computeMaxIntrinsicHeight(width);
-  }
+  // @override
+  // double computeMaxIntrinsicHeight(double width) {
+  //   return super.computeMaxIntrinsicHeight(width);
+  // }
 
   @override
   void performLayout() {
@@ -139,9 +139,9 @@ class RePositionReSizeRender extends RenderShiftedBox {
   //   }
   // }
 
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    // properties.add(DiagnosticsProperty<double>('scale', scale));
-  }
+  // @override
+  // void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  //   super.debugFillProperties(properties);
+  //   // properties.add(DiagnosticsProperty<double>('scale', scale));
+  // }
 }

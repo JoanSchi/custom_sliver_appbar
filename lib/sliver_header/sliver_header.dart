@@ -12,7 +12,7 @@ class SnapController extends StatefulWidget {
   final bool pinned;
   final bool floating;
 
-  SnapController({
+  const SnapController({
     Key? key,
     required this.delegate,
     this.pinned = false,

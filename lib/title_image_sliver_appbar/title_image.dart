@@ -366,7 +366,7 @@ class _TitleImageHorizontalState extends State<TitleImageHorizontal> {
       }
     }
 
-    print('safeTop ${animations['safeTop']?.value}');
+    // debugPrint('safeTop ${animations['safeTop']?.value}');
 
     double heightText =
         maximum + (animations['safeTop']?.value ?? 0.0) - widget.shrinkOffset;

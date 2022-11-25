@@ -24,15 +24,15 @@ class PersistantHeaderAnimation extends Animation<double>
     notifyListeners();
   }
 
-  @override
-  void addListener(VoidCallback listener) {
-    super.addListener(listener);
-  }
+  // @override
+  // void addListener(VoidCallback listener) {
+  //   super.addListener(listener);
+  // }
 
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-  }
+  // @override
+  // void removeListener(VoidCallback listener) {
+  //   super.removeListener(listener);
+  // }
 
   @override
   AnimationStatus get status {

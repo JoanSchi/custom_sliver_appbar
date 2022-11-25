@@ -91,7 +91,7 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.0),
         ),
-        color: Colors.amber[50],
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -197,7 +197,25 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
                       child: Text(
                         '${options.floatingExtent.toInt()}',
                         textAlign: TextAlign.end,
-                      ))
+                      )),
+                ],
+              ),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 24.0,
+                  ),
+                  const Text('Typical:'),
+                  const SizedBox(
+                    width: 8.0,
+                  ),
+                  TextButton(
+                      onPressed: () => floatingExtentOnChange(
+                          (options.lrTbAligment == LrTbAlignment.no
+                              ? 104.0
+                              : 48.0)),
+                      child: Text(
+                          '${(options.lrTbAligment == LrTbAlignment.no ? 104.0 : 48.0)}')),
                 ],
               ),
               const SizedBox(

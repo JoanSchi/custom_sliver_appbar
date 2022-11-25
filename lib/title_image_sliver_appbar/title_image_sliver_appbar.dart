@@ -585,7 +585,7 @@ class Disappear extends StatelessWidget {
         (height - disappearHeight - shrinkOffsetCorrected) / disappearHeight,
         0.0,
         1.0);
-    print('opacity $opacity $height $disappearHeight');
+    // debugPrint('opacity $opacity $height $disappearHeight');
     return Opacity(
       opacity: opacity,
       child: child,

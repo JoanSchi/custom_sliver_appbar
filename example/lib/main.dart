@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:custom_sliver_appbar/sliver_header/center_y.dart';
 import 'package:custom_sliver_appbar/sliver_header/clip_top.dart';
-import 'package:custom_sliver_appbar/sliver_header/ratio_reposition_resize.dart';
 import 'package:custom_sliver_appbar/title_image_sliver_appbar/left_right_to_bottom_layout.dart';
 import 'package:custom_sliver_appbar/title_image_sliver_appbar/properties.dart';
 import 'package:custom_sliver_appbar/title_image_sliver_appbar/title_image_sliver_appbar.dart';
@@ -10,8 +9,8 @@ import 'package:example/blank.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/gestures/monodrag.dart';
 
+import 'about.dart';
 import 'options.dart';
 
 void main() {
@@ -131,7 +130,10 @@ class _ExampleState extends State<Example> {
     final theme = Theme.of(context);
     final orientation = MediaQuery.of(context).orientation;
 
-    final List<String> tabs = <String>['Options', 'List'];
+    final List<String> tabs = <String>[
+      'About',
+      'Options',
+    ];
 
     final bottom = TabBar(
       labelColor: theme.primaryColorDark,
@@ -201,7 +203,7 @@ class _ExampleState extends State<Example> {
                     ? Tween(begin: 42, end: 36)
                     : null,
                 backgroundColorScrolledContent:
-                    Color.fromARGB(255, 254, 252, 245),
+                    const Color.fromARGB(255, 254, 252, 245),
                 lrTbAlignment: orientation == Orientation.portrait
                     ? optionsPortrait.lrTbAligment
                     : optionsLandscape.lrTbAligment,
@@ -263,43 +265,6 @@ class _ExampleState extends State<Example> {
           // These are the contents of the tab views, below the tabs.
           children: [
             Builder(
-              builder: (BuildContext context) {
-                return CustomScrollView(
-                  key: const PageStorageKey<String>('options'),
-                  slivers: <Widget>[
-                    SliverOverlapInjector(
-                      // This is the flip side of the SliverOverlapAbsorber
-                      // above.
-                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                          context),
-                    ),
-                    SliverToBoxAdapter(
-                      child: OptionsCardPortrait(
-                        options: orientation == Orientation.portrait
-                            ? optionsPortrait
-                            : optionsLandscape,
-                        onChange: onChange,
-                      ),
-                    ),
-                    SliverFixedExtentList(
-                      itemExtent: 300.0,
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          // This builder is called for each child.
-                          // In this example, we just number each list item.
-                          return BlankCard(
-                            index: index,
-                            title: Text('Item $index'),
-                          );
-                        },
-                        childCount: 60,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-            Builder(
               // This Builder is needed to provide a BuildContext that is
               // "inside" the NestedScrollView, so that
               // sliverOverlapAbsorberHandleFor() can find the
@@ -322,6 +287,11 @@ class _ExampleState extends State<Example> {
                       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                           context),
                     ),
+                    const SliverToBoxAdapter(
+                        child: Padding(
+                      padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+                      child: About(),
+                    )),
                     SliverPadding(
                       padding: const EdgeInsets.all(8.0),
                       // In this example, the inner scroll view has
@@ -346,6 +316,50 @@ class _ExampleState extends State<Example> {
                           // specifies how many children this inner list
                           // has. In this example, each tab has a list of
                           // exactly 30 items, but this is arbitrary.
+                          childCount: 60,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            Builder(
+              builder: (BuildContext context) {
+                return CustomScrollView(
+                  key: const PageStorageKey<String>('options'),
+                  slivers: <Widget>[
+                    SliverOverlapInjector(
+                      // This is the flip side of the SliverOverlapAbsorber
+                      // above.
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 8.0),
+                        child: OptionsCardPortrait(
+                          options: orientation == Orientation.portrait
+                              ? optionsPortrait
+                              : optionsLandscape,
+                          onChange: onChange,
+                        ),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.all(8.0),
+                      sliver: SliverFixedExtentList(
+                        itemExtent: 300.0,
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            // This builder is called for each child.
+                            // In this example, we just number each list item.
+                            return BlankCard(
+                              index: index,
+                              title: Text('Item $index'),
+                            );
+                          },
                           childCount: 60,
                         ),
                       ),

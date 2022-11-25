@@ -14,7 +14,7 @@ class BlankCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = index % 2 == 0 ? Colors.white : Colors.amber[50];
+    final color = index % 2 != 0 ? Colors.white : Colors.amber[50];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Card(

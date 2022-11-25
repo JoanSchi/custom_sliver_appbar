@@ -1,6 +1,5 @@
 library custom_sliver_appbar;
 
-import 'package:custom_sliver_appbar/my_appbar.dart';
 import 'package:flutter/material.dart';
 import 'sliver_header/sliver_header.dart';
 
@@ -10,7 +9,7 @@ typedef PersistentHeader = CustomAdjustedSliverPersistentHeader Function(
 class CustomSliverAppBar extends StatefulWidget {
   final PersistentHeader persistentHeader;
 
-  CustomSliverAppBar({
+  const CustomSliverAppBar({
     Key? key,
     required this.persistentHeader,
   }) : super(key: key);

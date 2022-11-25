@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:custom_sliver_appbar/custom_sliver_appbar.dart';
-
 void main() {
   test('adds one to input values', () {
     // final calculator = Calculator();
