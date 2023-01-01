@@ -7,6 +7,10 @@ class Ratio {
   final double dx;
   final double dy;
 
+  const Ratio.zero()
+      : dx = 0.0,
+        dy = 0.0;
+
   const Ratio(
     this.dx,
     this.dy,
@@ -27,7 +31,7 @@ class RePositionReSize extends SingleChildRenderObjectWidget {
   const RePositionReSize({
     Key? key,
     Widget? child,
-    required this.ratioPosition,
+    this.ratioPosition = const Ratio.zero(),
     required this.ratioHeight,
   }) : super(key: key, child: child);
 
@@ -106,13 +110,18 @@ class RePositionReSizeRender extends RenderShiftedBox {
   @override
   void performLayout() {
     if (child != null) {
-      child!.layout(const BoxConstraints(), parentUsesSize: true);
+      child!.layout(
+          BoxConstraints(
+              maxWidth: constraints.maxWidth,
+              maxHeight: constraints.maxHeight * ratioHeight),
+          parentUsesSize: true);
 
       Size sizeChild = child!.size;
 
       final BoxParentData parentData = child!.parentData as BoxParentData;
 
-      size = constraints.constrain(sizeChild / ratioHeight);
+      size = constraints
+          .constrain(Size(sizeChild.width, sizeChild.height / ratioHeight));
 
       Offset correctOffset = ratioPosition.toOffset(sizeChild);
 

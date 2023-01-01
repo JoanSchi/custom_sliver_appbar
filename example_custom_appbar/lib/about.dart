@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class About extends StatelessWidget {
@@ -9,21 +8,6 @@ class About extends StatelessWidget {
     final theme = Theme.of(context);
     const headerSize = 20.0;
     const paragraphSize = 18.0;
-
-    bool noMobile = false;
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.linux:
-      case TargetPlatform.macOS:
-      case TargetPlatform.windows:
-        {
-          noMobile = true;
-          break;
-        }
-      default:
-        {
-          noMobile = false;
-        }
-    }
 
     return Card(
       shape: RoundedRectangleBorder(

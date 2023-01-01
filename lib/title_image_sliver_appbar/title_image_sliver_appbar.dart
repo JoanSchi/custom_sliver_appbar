@@ -244,7 +244,7 @@ class TextImageSliverPersistentHeaderDelegate
           h = m;
         }
 
-        final w = Center(child: image!.imageBuild(h));
+        final w = Center(child: image!.imageBuilder(context));
 
         children.add(AppBarWidget(
           item: AppBarItem.center,
@@ -452,7 +452,7 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
         }
 
         final w = Center(
-          child: image!.imageBuild(h),
+          child: image!.imageBuilder(context),
         );
 
         children.add(LrTbWidget(

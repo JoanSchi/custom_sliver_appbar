@@ -142,7 +142,7 @@ class _TitleImagePortraitState extends State<TitleImagePortrait> {
       }
 
       imageWidget = Opacity(
-          opacity: imageOpacity, child: customImage.imageBuild(imageHeight));
+          opacity: imageOpacity, child: customImage.imageBuilder(context));
     }
 
     final titleOpacity = animations['titleOpacity']?.value ?? 1.0;
@@ -333,7 +333,7 @@ class _TitleImageHorizontalState extends State<TitleImageHorizontal> {
               clampDouble((imageHeight - m) / (widget.maximum - m), 0.0, 1.0))
           : 12.0;
 
-      imageWidget = customImage.imageBuild(imageHeight);
+      imageWidget = customImage.imageBuilder(context);
 
       if (widget.minExtent < minimum) {
         imageWidget = Opacity(opacity: imageOpacity, child: imageWidget);

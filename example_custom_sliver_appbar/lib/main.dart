@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:custom_sliver_appbar/sliver_header/center_y.dart';
 import 'package:custom_sliver_appbar/sliver_header/clip_top.dart';
+import 'package:custom_sliver_appbar/sliver_header/ratio_reposition_resize.dart';
 import 'package:custom_sliver_appbar/title_image_sliver_appbar/left_right_to_bottom_layout.dart';
 import 'package:custom_sliver_appbar/title_image_sliver_appbar/properties.dart';
 import 'package:custom_sliver_appbar/title_image_sliver_appbar/title_image_sliver_appbar.dart';
@@ -228,21 +229,26 @@ class _ExampleState extends State<Example> {
                     ? CustomImage(
                         includeTopWithMinium:
                             optionsPortrait.imageBehindStatusbar,
-                        imageBuild: (double height) => Image(
-                            height: height,
-                            image: const AssetImage(
-                              'graphics/verf.png',
-                            )),
+                        imageBuilder: (_) => const RePositionReSize(
+                          ratioHeight: 1.0,
+                          ratioPosition: Ratio(0.0, 0.0),
+                          child: Image(
+                              image: AssetImage(
+                            'graphics/verf.png',
+                          )),
+                        ),
                       )
                     : CustomImage(
                         includeTopWithMinium:
                             optionsLandscape.imageBehindStatusbar,
-                        imageBuild: (double height) => Image(
-                            height: height,
-                            image: const AssetImage(
-                              'graphics/verf.png',
+                        imageBuilder: (_) => const RePositionReSize(
+                              ratioHeight: 1.0,
+                              ratioPosition: Ratio(0.0, 0.0),
+                              child: Image(
+                                  image: AssetImage(
+                                'graphics/verf.png',
+                              )),
                             )),
-                      ),
                 pinned: true,
                 bottom: bottom,
                 orientation: orientation,

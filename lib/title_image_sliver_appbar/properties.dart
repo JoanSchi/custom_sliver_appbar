@@ -1,15 +1,14 @@
-import 'package:custom_sliver_appbar/title_image_sliver_appbar/title_image_sliver_appbar.dart';
 import 'package:flutter/widgets.dart';
 
 class CustomImage {
   final double? minimum;
   final bool includeTopWithMinium;
-  final BuildWidgetAppBar imageBuild;
+  final WidgetBuilder imageBuilder;
 
   CustomImage({
     this.minimum = 56.0,
     this.includeTopWithMinium = true,
-    required this.imageBuild,
+    required this.imageBuilder,
   });
 }
 
