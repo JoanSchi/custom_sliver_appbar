@@ -7,7 +7,7 @@ class Options {
   double _maxCenter;
   double bottomHeigth;
   double floatingExtent;
-  LrTbAlignment lrTbAligment;
+  LrTbFit lrTbFit;
   bool imageBehindStatusbar;
   bool blockTabScroll;
 
@@ -15,7 +15,7 @@ class Options {
     required double minExtent,
     required double maxExtent,
     required this.floatingExtent,
-    required this.lrTbAligment,
+    required this.lrTbFit,
     required this.bottomHeigth,
     this.imageBehindStatusbar = true,
     this.blockTabScroll = false,
@@ -211,11 +211,9 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
                   ),
                   TextButton(
                       onPressed: () => floatingExtentOnChange(
-                          (options.lrTbAligment == LrTbAlignment.no
-                              ? 104.0
-                              : 48.0)),
+                          (options.lrTbFit == LrTbFit.no ? 104.0 : 48.0)),
                       child: Text(
-                          '${(options.lrTbAligment == LrTbAlignment.no ? 104.0 : 48.0)}')),
+                          '${(options.lrTbFit == LrTbFit.no ? 104.0 : 48.0)}')),
                 ],
               ),
               const SizedBox(
@@ -233,21 +231,21 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
               const Text(
                 'Place action bottoms beside bottom',
               ),
-              RadioListTile<LrTbAlignment>(
+              RadioListTile<LrTbFit>(
                   title: const Text('No'),
-                  value: LrTbAlignment.no,
-                  groupValue: options.lrTbAligment,
-                  onChanged: lrTbAlignment),
-              RadioListTile<LrTbAlignment>(
+                  value: LrTbFit.no,
+                  groupValue: options.lrTbFit,
+                  onChanged: changeLrTbFit),
+              RadioListTile<LrTbFit>(
                   title: const Text('Fit'),
-                  value: LrTbAlignment.fit,
-                  groupValue: options.lrTbAligment,
-                  onChanged: lrTbAlignment),
-              RadioListTile<LrTbAlignment>(
+                  value: LrTbFit.fit,
+                  groupValue: options.lrTbFit,
+                  onChanged: changeLrTbFit),
+              RadioListTile<LrTbFit>(
                   title: const Text('Even'),
-                  value: LrTbAlignment.even,
-                  groupValue: options.lrTbAligment,
-                  onChanged: lrTbAlignment),
+                  value: LrTbFit.even,
+                  groupValue: options.lrTbFit,
+                  onChanged: changeLrTbFit),
               Row(children: [
                 const SizedBox(
                   width: 24.0,
@@ -307,8 +305,8 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
     widget.onChange();
   }
 
-  lrTbAlignment(LrTbAlignment? value) {
-    options.lrTbAligment = value ?? LrTbAlignment.no;
+  changeLrTbFit(LrTbFit? value) {
+    options.lrTbFit = value ?? LrTbFit.no;
     widget.onChange();
   }
 

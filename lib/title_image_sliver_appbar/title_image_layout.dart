@@ -185,7 +185,7 @@ class RenderTitleImageLayout extends RenderBox
             double xc;
             double yc;
             if (isPortrait) {
-              xc = (width - sizeChild.width + space) / 2.0;
+              xc = (width - sizeChild.width) / 2.0;
               yc = yTitlePortrait(
                   height, childParentData.height, sizeChild.height);
             } else {

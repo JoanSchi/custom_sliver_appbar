@@ -15,8 +15,14 @@ class About extends StatelessWidget {
       case TargetPlatform.linux:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
-        noMobile = true;
-        break;
+        {
+          noMobile = true;
+          break;
+        }
+      default:
+        {
+          noMobile = false;
+        }
     }
 
     return Card(

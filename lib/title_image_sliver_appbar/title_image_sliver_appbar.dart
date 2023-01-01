@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'package:custom_sliver_appbar/sliver_header/ratio_reposition_resize.dart';
 import 'package:custom_sliver_appbar/title_image_sliver_appbar/appbar_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +25,11 @@ class TextImageSliverAppBar extends StatefulWidget {
   final double maxCenter;
   final double minExtent;
   final Orientation orientation;
-  final LrTbAlignment lrTbAlignment;
+  final LrTbFit lrTbFit;
+  final double elevation;
+  final double scrolledUnderElevation;
   final Color? backgroundColor;
-  final Color? backgroundColorScrolledContent;
+  final Color? scrolledUnderBackground;
   final Tween<double>? tween;
 
   const TextImageSliverAppBar(
@@ -45,9 +46,11 @@ class TextImageSliverAppBar extends StatefulWidget {
       required this.floatingExtent,
       required this.orientation,
       this.minExtent = 0.0,
-      this.lrTbAlignment = LrTbAlignment.no,
+      this.lrTbFit = LrTbFit.fit,
       this.backgroundColor,
-      this.backgroundColorScrolledContent,
+      this.scrolledUnderBackground,
+      this.elevation = 0.0,
+      this.scrolledUnderElevation = 1.0,
       this.tween})
       : super(key: key);
 
@@ -57,44 +60,6 @@ class TextImageSliverAppBar extends StatefulWidget {
 
 class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
     with SingleTickerProviderStateMixin {
-  ScrollNotificationObserverState? _scrollNotificationObserver;
-  bool _scrolledUnder = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_scrollNotificationObserver != null) {
-      _scrollNotificationObserver!.removeListener(_handleScrollNotification);
-      _scrollNotificationObserver = ScrollNotificationObserver.of(context);
-    }
-    if (_scrollNotificationObserver != null) {
-      _scrollNotificationObserver!.addListener(_handleScrollNotification);
-    }
-  }
-
-  @override
-  void dispose() {
-    if (_scrollNotificationObserver != null) {
-      _scrollNotificationObserver!.removeListener(_handleScrollNotification);
-      _scrollNotificationObserver = null;
-    }
-    super.dispose();
-  }
-
-  void _handleScrollNotification(ScrollNotification notification) {
-    if (notification is ScrollUpdateNotification) {
-      final bool oldScrolledUnder = _scrolledUnder;
-      _scrolledUnder = notification.depth == 0 &&
-          notification.metrics.extentBefore > 0 &&
-          notification.metrics.axis == Axis.vertical;
-      if (_scrolledUnder != oldScrolledUnder) {
-        setState(() {
-          // React to a change in MaterialState.scrolledUnder
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     debugPrint('devices ${ScrollConfiguration.of(context).dragDevices}');
@@ -108,12 +73,13 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
       sliver: CustomAdjustedSliverPersistentHeader(
         pinned: widget.pinned,
         floating: widget.floating,
-        delegate: widget.lrTbAlignment == LrTbAlignment.no
+        delegate: widget.lrTbFit == LrTbFit.no
             ? TextImageSliverPersistentHeaderDelegate(
                 vsync: this,
                 backgroundColor: widget.backgroundColor,
-                backgroundColorScrolledContent:
-                    widget.backgroundColorScrolledContent,
+                scrolledUnderBackground: widget.scrolledUnderBackground,
+                elevation: widget.elevation,
+                scrolledUnderElevation: widget.scrolledUnderElevation,
                 title: widget.title,
                 image: widget.image,
                 leftActions: widget.leftActions,
@@ -129,8 +95,9 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
             : LeftRightToBottomTextImageSliverPersistentHeaderDelegate(
                 vsync: this,
                 backgroundColor: widget.backgroundColor,
-                backgroundColorScrolledContent:
-                    widget.backgroundColorScrolledContent,
+                scrolledUnderBackground: widget.scrolledUnderBackground,
+                elevation: widget.elevation,
+                scrolledUnderElevation: widget.scrolledUnderElevation,
                 title: widget.title,
                 image: widget.image,
                 leftActions: widget.leftActions,
@@ -142,7 +109,7 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
                 minCenter: widget.minCenter,
                 maxCenter: widget.maxCenter,
                 minExtent: widget.minExtent,
-                lrTbAlignment: widget.lrTbAlignment,
+                lrTbFit: widget.lrTbFit,
                 tween: widget.tween),
       ),
     );
@@ -159,7 +126,6 @@ class TextImageSliverPersistentHeaderDelegate
   final BuildWidgetAppBar? leftActions;
   final BuildWidgetAppBar? rightActions;
   final double _floatingExtent;
-  final double? imageHeight;
   final Orientation orientation;
   final double safeTop;
   final double maxCenter;
@@ -167,7 +133,9 @@ class TextImageSliverPersistentHeaderDelegate
   final double _minExtent;
   final double bottomHeight;
   final Color? backgroundColor;
-  final Color? backgroundColorScrolledContent;
+  final Color? scrolledUnderBackground;
+  final double elevation;
+  final double scrolledUnderElevation;
   final Tween<double>? tween;
 
   TextImageSliverPersistentHeaderDelegate({
@@ -177,14 +145,15 @@ class TextImageSliverPersistentHeaderDelegate
     this.leftActions,
     this.rightActions,
     required double floatingExtent,
-    this.imageHeight,
     required this.orientation,
     required this.safeTop,
     required this.maxCenter,
     required this.minCenter,
     double minExtent = 0.0,
     this.backgroundColor,
-    this.backgroundColorScrolledContent,
+    this.scrolledUnderBackground,
+    required this.elevation,
+    required this.scrolledUnderElevation,
     this.tween,
     TickerProvider? vsync,
   })  : _vsync = vsync,
@@ -275,12 +244,7 @@ class TextImageSliverPersistentHeaderDelegate
           h = m;
         }
 
-        final w = Center(
-          child: RePositionReSize(
-              ratioHeight: image!.heightRatio,
-              ratioPosition: image!.positionRatio,
-              child: image!.imageBuild(h * image!.heightRatio)),
-        );
+        final w = Center(child: image!.imageBuild(h));
 
         children.add(AppBarWidget(
           item: AppBarItem.center,
@@ -323,8 +287,8 @@ class TextImageSliverPersistentHeaderDelegate
     }
 
     return Material(
-        color:
-            scrolledContent ? backgroundColorScrolledContent : backgroundColor,
+        elevation: scrolledContent ? scrolledUnderElevation : elevation,
+        color: scrolledContent ? scrolledUnderBackground : backgroundColor,
         child: AppBarLayout(
           children: children,
         ));
@@ -361,7 +325,6 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
   final BuildWidgetAppBar? leftActions;
   final BuildWidgetAppBar? rightActions;
   final double _floatingExtent;
-  final double? imageHeight;
   final Orientation orientation;
   final double safeTop;
   final double maxCenter;
@@ -371,8 +334,10 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
   late PersistantHeaderAnimation _animation;
   late Animation<double> leftRightHeight;
   final Color? backgroundColor;
-  final Color? backgroundColorScrolledContent;
-  final LrTbAlignment lrTbAlignment;
+  final Color? scrolledUnderBackground;
+  final double elevation;
+  final double scrolledUnderElevation;
+  final LrTbFit lrTbFit;
   final Tween<double>? tween;
 
   LeftRightToBottomTextImageSliverPersistentHeaderDelegate({
@@ -382,15 +347,16 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
     this.leftActions,
     this.rightActions,
     required double floatingExtent,
-    this.imageHeight,
     required this.orientation,
     required this.safeTop,
     required this.maxCenter,
     required this.minCenter,
     double minExtent = 0.0,
     this.backgroundColor,
-    this.backgroundColorScrolledContent,
-    required this.lrTbAlignment,
+    this.scrolledUnderBackground,
+    required this.elevation,
+    required this.scrolledUnderElevation,
+    required this.lrTbFit,
     this.tween,
     TickerProvider? vsync,
   })  : _vsync = vsync,
@@ -486,10 +452,7 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
         }
 
         final w = Center(
-          child: RePositionReSize(
-              ratioHeight: image!.heightRatio,
-              ratioPosition: image!.positionRatio,
-              child: image!.imageBuild(h * image!.heightRatio)),
+          child: image!.imageBuild(h),
         );
 
         children.add(LrTbWidget(
@@ -535,10 +498,10 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
     }
 
     return Material(
-        color:
-            scrolledContent ? backgroundColorScrolledContent : backgroundColor,
+        elevation: scrolledContent ? scrolledUnderElevation : elevation,
+        color: scrolledContent ? scrolledUnderBackground : backgroundColor,
         child: LrTbLayout(
-          lrTbAlignment: lrTbAlignment,
+          lrTbFit: lrTbFit,
           aligmentRatio: _animation.value,
           children: children,
         ));

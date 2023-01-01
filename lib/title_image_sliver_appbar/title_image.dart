@@ -1,18 +1,13 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import '../sliver_header/persistant_header_animation.dart';
-import '../sliver_header/ratio_reposition_resize.dart';
 import 'properties.dart';
 import 'title_image_layout.dart';
 
 class TitleImagePortrait extends StatefulWidget {
   final double shrinkOffset;
-
   final double minimum;
   final double maximum;
-
   final CustomTitle? title;
   final CustomImage? image;
   final double safeTop;
@@ -53,24 +48,17 @@ class _TitleImagePortraitState extends State<TitleImagePortrait> {
 
   @override
   void didUpdateWidget(covariant TitleImagePortrait oldWidget) {
-    bool update = false;
     if (minimum != widget.minimum ||
         maximum != widget.maximum ||
         widget.title != title ||
         widget.image != image) {
       setValues();
-      update = true;
     }
 
     if (oldWidget.shrinkOffset != widget.shrinkOffset) {
       for (PersistantHeaderAnimation a in persitantAnimation) {
         a.shrinkOffset = widget.shrinkOffset;
       }
-      update = true;
-    }
-
-    if (update) {
-      setState(() {});
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -130,8 +118,6 @@ class _TitleImagePortraitState extends State<TitleImagePortrait> {
   Widget build(BuildContext context) {
     final customImage = image;
     final customTitle = title;
-    // print(
-    //     'shrikoff ${widget.shrinkOffset} ${animations['titleOpacity']?.value}');
 
     final titleHeight = animations['titleHeight']?.value ?? 0.0;
     double imageHeight = 0.0;
@@ -154,16 +140,9 @@ class _TitleImagePortraitState extends State<TitleImagePortrait> {
           imageHeight = m + top;
         }
       }
-      imageWidget = customImage.imageBuild(
-        imageHeight * customImage.heightRatio,
-      );
 
       imageWidget = Opacity(
-          opacity: imageOpacity,
-          child: RePositionReSize(
-              ratioPosition: customImage.positionRatio,
-              ratioHeight: customImage.heightRatio,
-              child: imageWidget));
+          opacity: imageOpacity, child: customImage.imageBuild(imageHeight));
     }
 
     final titleOpacity = animations['titleOpacity']?.value ?? 1.0;
@@ -354,19 +333,12 @@ class _TitleImageHorizontalState extends State<TitleImageHorizontal> {
               clampDouble((imageHeight - m) / (widget.maximum - m), 0.0, 1.0))
           : 12.0;
 
-      imageWidget = RePositionReSize(
-          ratioHeight: customImage.heightRatio,
-          ratioPosition: customImage.positionRatio,
-          child: customImage.imageBuild(
-            imageHeight * customImage.heightRatio,
-          ));
+      imageWidget = customImage.imageBuild(imageHeight);
 
       if (widget.minExtent < minimum) {
         imageWidget = Opacity(opacity: imageOpacity, child: imageWidget);
       }
     }
-
-    // debugPrint('safeTop ${animations['safeTop']?.value}');
 
     double heightText =
         maximum + (animations['safeTop']?.value ?? 0.0) - widget.shrinkOffset;

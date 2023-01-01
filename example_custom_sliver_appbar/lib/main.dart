@@ -19,12 +19,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const String _title = 'Flutter Code Sample';
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: _title,
+      title: 'Custom sliver appbar',
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
@@ -109,7 +107,7 @@ class _ExampleState extends State<Example> {
       minExtent: 0.0,
       floatingExtent: 56.0 + 48,
       maxExtent: 260.0,
-      lrTbAligment: LrTbAlignment.no,
+      lrTbFit: LrTbFit.no,
       imageBehindStatusbar: false,
       bottomHeigth: 0,
       blockTabScroll: widget.blockTabPhysics);
@@ -117,7 +115,7 @@ class _ExampleState extends State<Example> {
       minExtent: 0.0,
       floatingExtent: 48.0,
       maxExtent: 100.0,
-      lrTbAligment: LrTbAlignment.fit,
+      lrTbFit: LrTbFit.fit,
       bottomHeigth: 0,
       blockTabScroll: widget.blockTabPhysics);
 
@@ -200,11 +198,11 @@ class _ExampleState extends State<Example> {
                 tween: orientation == Orientation.portrait
                     ? Tween(begin: 42, end: 36)
                     : null,
-                backgroundColorScrolledContent:
+                scrolledUnderBackground:
                     const Color.fromARGB(255, 254, 252, 245),
-                lrTbAlignment: orientation == Orientation.portrait
-                    ? optionsPortrait.lrTbAligment
-                    : optionsLandscape.lrTbAligment,
+                lrTbFit: orientation == Orientation.portrait
+                    ? optionsPortrait.lrTbFit
+                    : optionsLandscape.lrTbFit,
                 leftActions: (double height) => ClipTop(
                   maxHeight: height,
                   child: CenterY(
@@ -224,13 +222,12 @@ class _ExampleState extends State<Example> {
                   textStyleTween: TextStyleTween(
                       begin: const TextStyle(fontSize: 24.0),
                       end: const TextStyle(fontSize: 16.0)),
-                  height: Tween(begin: 56.0, end: 56),
+                  height: Tween(begin: 56.0, end: 56.0),
                 ),
                 image: orientation == Orientation.portrait
                     ? CustomImage(
                         includeTopWithMinium:
                             optionsPortrait.imageBehindStatusbar,
-                        heightRatio: 1.0,
                         imageBuild: (double height) => Image(
                             height: height,
                             image: const AssetImage(
@@ -240,7 +237,6 @@ class _ExampleState extends State<Example> {
                     : CustomImage(
                         includeTopWithMinium:
                             optionsLandscape.imageBehindStatusbar,
-                        heightRatio: 1.0,
                         imageBuild: (double height) => Image(
                             height: height,
                             image: const AssetImage(
@@ -249,7 +245,7 @@ class _ExampleState extends State<Example> {
                       ),
                 pinned: true,
                 bottom: bottom,
-                orientation: MediaQuery.of(context).orientation,
+                orientation: orientation,
               ),
             ),
           ];

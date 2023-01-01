@@ -764,9 +764,10 @@ abstract class CustomRenderSliverFloatingPersistentHeader
   }) {
     final PersistentHeaderShowOnScreenConfiguration? showOnScreen =
         showOnScreenConfiguration;
-    if (showOnScreen == null)
+    if (showOnScreen == null) {
       return super.showOnScreen(
           descendant: descendant, rect: rect, duration: duration, curve: curve);
+    }
 
     assert(child != null || descendant == null);
     // We prefer the child's coordinate space (instead of the sliver's) because

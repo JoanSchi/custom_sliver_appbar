@@ -3,10 +3,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:math' as math;
 
-enum LrTbAlignment {
-  no,
+enum LrTbFit {
   even,
   fit,
+  no,
 }
 
 enum LrTbPositionFrom {
@@ -23,26 +23,28 @@ enum LrTbItem {
 
 class LrTbLayout extends MultiChildRenderObjectWidget {
   final double aligmentRatio;
-  final LrTbAlignment lrTbAlignment;
+  final LrTbFit lrTbFit;
 
   LrTbLayout({
     Key? key,
     List<Widget> children = const <Widget>[],
     required this.aligmentRatio,
-    required this.lrTbAlignment,
+    required this.lrTbFit,
   }) : super(key: key, children: children);
 
   @override
   RenderLrTbLayout createRenderObject(BuildContext context) {
     return RenderLrTbLayout(
       alignmentRatio: aligmentRatio,
-      lrTbAlignment: lrTbAlignment,
+      lrTbFit: lrTbFit,
     );
   }
 
   @override
   void updateRenderObject(BuildContext context, RenderLrTbLayout renderObject) {
-    renderObject.ratio = aligmentRatio;
+    renderObject
+      ..ratio = aligmentRatio
+      ..lrTbFit = lrTbFit;
   }
 }
 
@@ -120,14 +122,14 @@ class RenderLrTbLayout extends RenderBox
         ContainerRenderObjectMixin<RenderBox, LrTbParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, LrTbParentData> {
   double _ratio;
-  LrTbAlignment _lrTbAlignment;
+  LrTbFit _lrTbFit;
 
   RenderLrTbLayout({
     List<RenderBox>? children,
     required double alignmentRatio,
-    required LrTbAlignment lrTbAlignment,
+    required LrTbFit lrTbFit,
   })  : _ratio = alignmentRatio,
-        _lrTbAlignment = lrTbAlignment {
+        _lrTbFit = lrTbFit {
     addAll(children);
   }
 
@@ -140,14 +142,14 @@ class RenderLrTbLayout extends RenderBox
 
   double get ratio => _ratio;
 
-  set lrTbAlignment(LrTbAlignment value) {
-    if (value != _lrTbAlignment) {
-      _lrTbAlignment = value;
+  set lrTbFit(LrTbFit value) {
+    if (value != _lrTbFit) {
+      _lrTbFit = value;
       markNeedsLayout();
     }
   }
 
-  LrTbAlignment get lrTbAlignment => _lrTbAlignment;
+  LrTbFit get lrTbFit => _lrTbFit;
 
   @override
   void setupParentData(RenderObject child) {
@@ -224,15 +226,18 @@ class RenderLrTbLayout extends RenderBox
             double left;
             double widthBottom;
 
-            switch (lrTbAlignment) {
-              case LrTbAlignment.even:
+            switch (lrTbFit) {
+              case LrTbFit.even:
                 left = math.max(leftWidth, rightWidth) * ratio;
                 widthBottom = width - 2.0 * left;
                 break;
-              case LrTbAlignment.fit:
-              case LrTbAlignment.no:
+              case LrTbFit.fit:
                 left = leftWidth * ratio;
                 widthBottom = width - leftWidth * ratio - rightWidth * ratio;
+                break;
+              case LrTbFit.no:
+                left = 0.0;
+                widthBottom = width;
                 break;
             }
 
