@@ -10,7 +10,8 @@ import 'left_right_to_bottom_layout.dart';
 import 'properties.dart';
 import 'title_image.dart';
 
-typedef BuildWidgetAppBar = Widget Function(double height);
+typedef BuildWidgetAppBar = Widget Function(
+    BuildContext context, double height);
 
 class TextImageSliverAppBar extends StatefulWidget {
   final bool pinned;
@@ -191,7 +192,7 @@ class TextImageSliverPersistentHeaderDelegate
         item: AppBarItem.left,
         height: minCenter,
         position: safeTop + availableHeight - minCenter,
-        child: leftActions!.call(availableHeight),
+        child: leftActions!.call(context, availableHeight),
       ));
     }
 
@@ -204,7 +205,7 @@ class TextImageSliverPersistentHeaderDelegate
           item: AppBarItem.right,
           height: minCenter,
           position: safeTop + availableHeight - minCenter,
-          child: rightActions!.call(availableHeight)));
+          child: rightActions!.call(context, availableHeight)));
     }
 
     if (height - kScrollTolerance > safeTop + bottomHeight) {
@@ -398,7 +399,7 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
           lrTbPositionFrom: LrTbPositionFrom.top,
           item: LrTbItem.left,
           height: leftRightHeight.value,
-          child: leftActions!.call(availableHeight)));
+          child: leftActions!.call(context, availableHeight)));
     }
 
     if (rightActions != null && height - kScrollTolerance > safeTop) {
@@ -409,7 +410,7 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
         lrTbPositionFrom: LrTbPositionFrom.top,
         item: LrTbItem.right,
         height: leftRightHeight.value,
-        child: rightActions!.call(availableHeight),
+        child: rightActions!.call(context, availableHeight),
       ));
     }
 

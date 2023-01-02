@@ -204,14 +204,14 @@ class _ExampleState extends State<Example> {
                 lrTbFit: orientation == Orientation.portrait
                     ? optionsPortrait.lrTbFit
                     : optionsLandscape.lrTbFit,
-                leftActions: (double height) => ClipTop(
+                leftActions: (_, double height) => ClipTop(
                   maxHeight: height,
                   child: CenterY(
                     child: IconButton(
                         icon: const Icon(Icons.arrow_back), onPressed: () {}),
                   ),
                 ),
-                rightActions: (double height) => ClipTop(
+                rightActions: (_, double height) => ClipTop(
                   maxHeight: height,
                   child: CenterY(
                     child: IconButton(
