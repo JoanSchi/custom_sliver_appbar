@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:custom_sliver_appbar/custom_appbar.dart';
 import 'package:custom_sliver_appbar/title_image_sliver_appbar/appbar_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,8 @@ class TextImageSliverAppBar extends StatefulWidget {
   final Color? backgroundColor;
   final Color? scrolledUnderBackground;
   final Tween<double>? tween;
+  final EdgeInsets padding;
+  final AppBarBackgroundBuilder? appBarBackgroundBuilder;
 
   const TextImageSliverAppBar(
       {Key? key,
@@ -52,7 +55,9 @@ class TextImageSliverAppBar extends StatefulWidget {
       this.scrolledUnderBackground,
       this.elevation = 0.0,
       this.scrolledUnderElevation = 1.0,
-      this.tween})
+      this.tween,
+      this.padding = EdgeInsets.zero,
+      this.appBarBackgroundBuilder})
       : super(key: key);
 
   @override
@@ -85,6 +90,8 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
                 image: widget.image,
                 leftActions: widget.leftActions,
                 rightActions: widget.rightActions,
+                padding: widget.padding,
+                appBarBackgroundBuilder: widget.appBarBackgroundBuilder,
                 bottom: widget.bottom,
                 floatingExtent: widget.floatingExtent,
                 orientation: widget.orientation,
@@ -103,6 +110,8 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
                 image: widget.image,
                 leftActions: widget.leftActions,
                 rightActions: widget.rightActions,
+                padding: widget.padding,
+                appBarBackgroundBuilder: widget.appBarBackgroundBuilder,
                 bottom: widget.bottom,
                 floatingExtent: widget.floatingExtent,
                 orientation: widget.orientation,
@@ -138,6 +147,8 @@ class TextImageSliverPersistentHeaderDelegate
   final double elevation;
   final double scrolledUnderElevation;
   final Tween<double>? tween;
+  final EdgeInsets padding;
+  final AppBarBackgroundBuilder? appBarBackgroundBuilder;
 
   TextImageSliverPersistentHeaderDelegate({
     this.title,
@@ -145,6 +156,8 @@ class TextImageSliverPersistentHeaderDelegate
     this.bottom,
     this.leftActions,
     this.rightActions,
+    required this.padding,
+    this.appBarBackgroundBuilder,
     required double floatingExtent,
     required this.orientation,
     required this.safeTop,
@@ -165,7 +178,7 @@ class TextImageSliverPersistentHeaderDelegate
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent,
       bool scrolledContent) {
-    double height = maxExtent - shrinkOffset;
+    double height = maxExtent - shrinkOffset - padding.vertical;
 
     final List<Widget> children = [];
 
@@ -287,12 +300,29 @@ class TextImageSliverPersistentHeaderDelegate
       }
     }
 
-    return Material(
-        elevation: scrolledContent ? scrolledUnderElevation : elevation,
-        color: scrolledContent ? scrolledUnderBackground : backgroundColor,
-        child: AppBarLayout(
-          children: children,
-        ));
+    Widget w = AppBarLayout(
+      children: children,
+    );
+
+    final builder = appBarBackgroundBuilder;
+
+    if (builder != null) {
+      return builder(
+          context: context,
+          scrolledUnder: scrolledContent,
+          padding: padding,
+          safeTopPadding: safeTop,
+          child: w);
+    } else {
+      if (padding != EdgeInsets.zero) {
+        w = Padding(padding: padding, child: w);
+      }
+
+      return Material(
+          elevation: scrolledContent ? scrolledUnderElevation : elevation,
+          color: scrolledContent ? scrolledUnderBackground : backgroundColor,
+          child: w);
+    }
   }
 
   TickerProvider? get vsync => _vsync;
@@ -340,6 +370,8 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
   final double scrolledUnderElevation;
   final LrTbFit lrTbFit;
   final Tween<double>? tween;
+  final EdgeInsets padding;
+  final AppBarBackgroundBuilder? appBarBackgroundBuilder;
 
   LeftRightToBottomTextImageSliverPersistentHeaderDelegate({
     this.title,
@@ -347,6 +379,8 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
     this.bottom,
     this.leftActions,
     this.rightActions,
+    required this.padding,
+    this.appBarBackgroundBuilder,
     required double floatingExtent,
     required this.orientation,
     required this.safeTop,
@@ -373,7 +407,8 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent,
       bool scrolledContent) {
-    double height = maxExtent - shrinkOffset;
+    double height = maxExtent - shrinkOffset - padding.vertical;
+
     _animation.shrinkOffset = shrinkOffset;
     final List<Widget> children = [];
 
@@ -498,14 +533,34 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
       }
     }
 
-    return Material(
-        elevation: scrolledContent ? scrolledUnderElevation : elevation,
-        color: scrolledContent ? scrolledUnderBackground : backgroundColor,
-        child: LrTbLayout(
-          lrTbFit: lrTbFit,
-          aligmentRatio: _animation.value,
-          children: children,
-        ));
+    Widget w = LrTbLayout(
+      lrTbFit: lrTbFit,
+      aligmentRatio: _animation.value,
+      children: children,
+    );
+
+    final builder = appBarBackgroundBuilder;
+
+    if (builder != null) {
+      return builder(
+          context: context,
+          padding: padding,
+          scrolledUnder: scrolledContent,
+          safeTopPadding: safeTop,
+          child: w);
+    } else {
+      if (padding != EdgeInsets.zero) {
+        w = Padding(
+          padding: padding,
+          child: w,
+        );
+      }
+
+      return Material(
+          elevation: scrolledContent ? scrolledUnderElevation : elevation,
+          color: scrolledContent ? scrolledUnderBackground : backgroundColor,
+          child: w);
+    }
   }
 
   TickerProvider? get vsync => _vsync;

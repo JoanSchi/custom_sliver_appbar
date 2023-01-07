@@ -1,10 +1,13 @@
+import 'package:custom_sliver_appbar/shapeborder_appbar/shapeborder_lb_rb_rounded.dart';
 import 'package:custom_sliver_appbar/title_image_appbar/title_image_appbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'about.dart';
 import 'options.dart';
 
 void main() {
+  setOverlayStyle();
   runApp(const MyApp());
 }
 
@@ -111,37 +114,59 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
           backgroundColor: Colors.white,
           appBar: TitleImageAppBar(
-            orientation: orientation,
-            elevation: options.elevation,
-            elevationScrolledUnder: options.elevationScrolledUnder,
-            backgroundColor: options.backgroundColor,
-            backgroundColorScrolledUnder: options.backgroundColorScrolledUnder,
-            title: options.showTitle ? widget.title : null,
-            imageIncludeSafeTop: options.imageBehindAppbarStatus,
-            notificationPredicate: (ScrollNotification notification) =>
-                notification.depth == 1,
-            imageHeight: options.showImage ? options.imageHeight : 0.0,
-            image: options.showImage
-                ? const Image(
-                    image: AssetImage(
-                    'graphics/verf.png',
-                  ))
-                : null,
-            leftActions: options.showActionButtons
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: () {},
-                      )
-                    ],
-                  )
-                : null,
-            bottom: options.showBottom
-                ? const TabBar(tabs: [Tab(text: 'About'), Tab(text: 'Options')])
-                : null,
-          ),
+              orientation: orientation,
+              elevation: options.elevation,
+              elevationScrolledUnder: options.elevationScrolledUnder,
+              backgroundColor: options.backgroundColor,
+              backgroundColorScrolledUnder:
+                  options.backgroundColorScrolledUnder,
+              title: options.showTitle ? widget.title : null,
+              imageIncludeSafeTop: options.imageBehindAppbarStatus,
+              notificationPredicate: (ScrollNotification notification) =>
+                  notification.depth == 1,
+              imageHeight: options.showImage ? options.imageHeight : 0.0,
+              imageBuilder: options.showImage
+                  ? (_) => const Image(
+                          image: AssetImage(
+                        'graphics/verf.png',
+                      ))
+                  : null,
+              leftActions: options.showActionButtons
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () {},
+                        )
+                      ],
+                    )
+                  : null,
+              bottom: options.showBottom
+                  ? const TabBar(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      tabs: [Tab(text: 'About'), Tab(text: 'Options')])
+                  : null,
+              appBarBackgroundBuilder: (
+                  {required BuildContext context,
+                  required EdgeInsets padding,
+                  required double safeTopPadding,
+                  required bool scrolledUnder,
+                  Widget? child}) {
+                const leftPadding = 56.0;
+                return Material(
+                    color: scrolledUnder
+                        ? options.backgroundColorScrolledUnder
+                        : options.backgroundColor,
+                    shape: ShapeBorderLbRbRounded(
+                      topPadding: safeTopPadding,
+                      leftInsets: leftPadding,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: leftPadding),
+                      child: child,
+                    ));
+              }),
           body: TabBarView(
             children: [
               CustomScrollView(
@@ -200,4 +225,13 @@ class _MyHomePageState extends State<MyHomePage> {
           )),
     );
   }
+}
+
+setOverlayStyle() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white, //Color(0xFFf1f4fb),
+      systemNavigationBarIconBrightness: Brightness.dark));
 }

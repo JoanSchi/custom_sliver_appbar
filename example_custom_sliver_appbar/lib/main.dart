@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:custom_sliver_appbar/shapeborder_appbar/shapeborder_lb_rb_rounded.dart';
 import 'package:custom_sliver_appbar/sliver_header/center_y.dart';
 import 'package:custom_sliver_appbar/sliver_header/clip_top.dart';
 import 'package:custom_sliver_appbar/sliver_header/ratio_reposition_resize.dart';
@@ -147,46 +148,10 @@ class _ExampleState extends State<Example> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           // These are the slivers that show up in the "outer" scroll view.
           return <Widget>[
-            // SliverOverlapAbsorber(
-            //   // This widget takes the overlapping behavior of the SliverAppBar,
-            //   // and redirects it to the SliverOverlapInjector below. If it is
-            //   // missing, then it is possible for the nested "inner" scroll view
-            //   // below to end up under the SliverAppBar even when the inner
-            //   // scroll view thinks it has not been scrolled.
-            //   // This is not necessary if the "headerSliverBuilder" only builds
-            //   // widgets that do not overlap the next sliver.
-            //   handle:
-            //       NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            //   sliver: SliverAppBar(
-            //     title:
-            //         const Text('Books'), // This is the title in the app bar.
-            //     pinned: true,
-            //     expandedHeight: 150.0,
-            //     // The "forceElevated" property causes the SliverAppBar to show
-            //     // a shadow. The "innerBoxIsScrolled" parameter is true when the
-            //     // inner scroll view is scrolled beyond its "zero" point, i.e.
-            //     // when it appears to be scrolled below the SliverAppBar.
-            //     // Without this, there are cases where the shadow would appear
-            //     // or not appear inappropriately, because the SliverAppBar is
-            //     // not actually aware of the precise position of the inner
-            //     // scroll views.
-            //     forceElevated: innerBoxIsScrolled,
-            //     bottom: TabBar(
-            //       // These are the widgets to put in each tab in the tab bar.
-            //       tabs: tabs.map((String name) => Tab(text: name)).toList(),
-            //     ),
-            //   ),
-            // ),
             SliverOverlapAbsorber(
-              // This widget takes the overlapping behavior of the SliverAppBar,
-              // and redirects it to the SliverOverlapInjector below. If it is
-              // missing, then it is possible for the nested "inner" scroll view
-              // below to end up under the SliverAppBar even when the inner
-              // scroll view thinks it has not been scrolled.
-              // This is not necessary if the "headerSliverBuilder" only builds
-              // widgets that do not overlap the next sliver.
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
               sliver: TextImageSliverAppBar(
+                // appBarBackgroundBuilder: builderBackground,
                 minExtent: orientation == Orientation.portrait
                     ? optionsPortrait.minExtent
                     : optionsLandscape.minExtent,
@@ -376,6 +341,27 @@ class _ExampleState extends State<Example> {
 
   onChange() {
     setState(() {});
+  }
+
+  Widget builderBackground(
+      {required BuildContext context,
+      required EdgeInsets padding,
+      required double safeTopPadding,
+      required bool scrolledUnder,
+      Widget? child}) {
+    const leftPadding = 56.0;
+    return Material(
+        color: scrolledUnder
+            ? const Color.fromARGB(255, 254, 252, 245)
+            : Colors.white,
+        shape: ShapeBorderLbRbRounded(
+          topPadding: safeTopPadding,
+          leftInsets: leftPadding,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: leftPadding),
+          child: child,
+        ));
   }
 }
 
