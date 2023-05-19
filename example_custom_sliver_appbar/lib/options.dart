@@ -97,7 +97,8 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: Text('Options', style: theme.textTheme.headline5)),
+              Center(
+                  child: Text('Options', style: theme.textTheme.headlineSmall)),
               const Divider(),
               const Text(
                 'Minimum',

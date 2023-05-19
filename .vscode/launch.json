@@ -5,7 +5,8 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "custom_sliver_appbar",
+            "name": "example_custom_sliver_appbar",
+            "cwd": "example_custom_sliver_appbar",
             "request": "launch",
             "type": "dart"
         },
@@ -22,24 +23,30 @@
             "flutterMode": "release"
         },
         {
-            "name": "example",
-            "cwd": "example",
+            "name": "example_custom_appbar",
+            "cwd": "example_custom_appbar",
             "request": "launch",
             "type": "dart"
         },
-        {
-            "name": "example (profile mode)",
-            "cwd": "example",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "example (release mode)",
-            "cwd": "example",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        }
+        // {
+        //     "name": "example",
+        //     "cwd": "example",
+        //     "request": "launch",
+        //     "type": "dart"
+        // },
+        // {
+        //     "name": "example (profile mode)",
+        //     "cwd": "example",
+        //     "request": "launch",
+        //     "type": "dart",
+        //     "flutterMode": "profile"
+        // },
+        // {
+        //     "name": "example (release mode)",
+        //     "cwd": "example",
+        //     "request": "launch",
+        //     "type": "dart",
+        //     "flutterMode": "release"
+        // }
     ]
 }

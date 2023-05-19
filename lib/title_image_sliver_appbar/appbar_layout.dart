@@ -13,7 +13,7 @@ enum AppBarItem {
 class AppBarLayout extends MultiChildRenderObjectWidget {
   final double innerPadding;
 
-  AppBarLayout({
+  const AppBarLayout({
     Key? key,
     List<Widget> children = const <Widget>[],
     this.innerPadding = 12.0,

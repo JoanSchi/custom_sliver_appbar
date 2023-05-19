@@ -185,7 +185,7 @@ class _TitleImageAppBarState extends State<TitleImageAppBar> {
 
     final titleTextStyle = widget.titleTextStyle ??
         theme.appBarTheme.titleTextStyle ??
-        theme.textTheme.headline6?.copyWith(color: foregroundColor);
+        theme.textTheme.titleLarge?.copyWith(color: foregroundColor);
 
     final imageBuilder = widget.imageBuilder;
     Widget w;

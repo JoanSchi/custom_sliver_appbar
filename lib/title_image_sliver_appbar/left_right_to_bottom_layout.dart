@@ -25,7 +25,7 @@ class LrTbLayout extends MultiChildRenderObjectWidget {
   final double aligmentRatio;
   final LrTbFit lrTbFit;
 
-  LrTbLayout({
+  const LrTbLayout({
     Key? key,
     List<Widget> children = const <Widget>[],
     required this.aligmentRatio,

@@ -26,8 +26,44 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Custom sliver appbar',
       theme: ThemeData(
-        primarySwatch: Colors.amber,
-      ),
+          useMaterial3: true,
+          colorScheme: const ColorScheme(
+            brightness: Brightness.light,
+            primary: Color.fromARGB(255, 17, 85, 114),
+            onPrimary: Color(0xFFFFFFFF),
+            primaryContainer: Color(0xFFf1f5fd),
+            onPrimaryContainer: Color.fromARGB(255, 5, 66, 92),
+            secondary: Color(0xFF625B71),
+            onSecondary: Color(0xFFFFFFFF),
+            secondaryContainer:
+                Color.fromARGB(255, 174, 188, 193), //Color(0xFFE8DEF8),
+            onSecondaryContainer: Color.fromARGB(255, 5, 66, 92),
+            tertiary: Color(0xFF7E5260),
+            onTertiary: Color(0xFFFFFFFF),
+            tertiaryContainer: Color(0xFFFFD9E3),
+            onTertiaryContainer: Color(0xFF31101D),
+            error: Color(0xFFBA1A1A),
+            errorContainer: Color(0xFFFFDAD6),
+            onError: Color(0xFFFFFFFF),
+            onErrorContainer: Color(0xFF410002),
+            background: Colors.white, // Color(0xFFFFFBFF),
+            onBackground: Color(0xFF1C1B1E),
+            surface: Color.fromARGB(255, 246, 250, 253),
+            //onSurface: Text, icons
+            onSurface: Color.fromARGB(255, 3, 50, 71),
+            surfaceVariant: Color(0xFFE7E0EB),
+            onSurfaceVariant: Color(0xFF49454E),
+            outline: Color(0xFF7A757F),
+            onInverseSurface: Color(0xFFF4EFF4),
+            inverseSurface: Color(0xFF313033),
+            inversePrimary: Color(0xFF70b7d3),
+            shadow: Color(0xFF000000),
+            //surfaceTint: Tint background calendar
+            surfaceTint: Color(0xFF70b7d3),
+            //outlineVariant: Divider
+            outlineVariant: Color(0xFFCAC4CF),
+            scrim: Color(0xFF000000),
+          )),
       home: const AdjustScrollConfiguration(),
     );
   }
@@ -63,7 +99,8 @@ class AdjustScrollConfiguration extends StatelessWidget {
                     top: 0.0,
                     right: 0.0,
                     height: 24.0,
-                    child: Container(color: Colors.pink.withOpacity(0.1))),
+                    child: Container(
+                        color: const Color(0xFF70b7d3).withOpacity(0.2))),
               ],
             ));
       } else {
@@ -91,6 +128,25 @@ class MyScrollBehavior extends MaterialScrollBehavior {
         PointerDeviceKind.touch,
         PointerDeviceKind.mouse,
       };
+
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    switch (getPlatform(context)) {
+      case TargetPlatform.iOS:
+      case TargetPlatform.linux:
+      case TargetPlatform.macOS:
+      case TargetPlatform.windows:
+        return child;
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+        return GlowingOverscrollIndicator(
+          axisDirection: details.direction,
+          color: Theme.of(context).colorScheme.secondary,
+          child: child,
+        );
+    }
+  }
 }
 
 class Example extends StatefulWidget {
@@ -134,7 +190,7 @@ class _ExampleState extends State<Example> {
     ];
 
     final bottom = TabBar(
-      labelColor: theme.primaryColorDark,
+      labelColor: theme.colorScheme.primary,
       tabs: tabs.map((String name) => Tab(text: name)).toList(),
     );
 
@@ -151,6 +207,7 @@ class _ExampleState extends State<Example> {
             SliverOverlapAbsorber(
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
               sliver: TextImageSliverAppBar(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 // appBarBackgroundBuilder: builderBackground,
                 minExtent: orientation == Orientation.portrait
                     ? optionsPortrait.minExtent
@@ -165,7 +222,7 @@ class _ExampleState extends State<Example> {
                     ? Tween(begin: 42, end: 36)
                     : null,
                 scrolledUnderBackground:
-                    const Color.fromARGB(255, 254, 252, 245),
+                    const Color.fromARGB(255, 236, 247, 251),
                 lrTbFit: orientation == Orientation.portrait
                     ? optionsPortrait.lrTbFit
                     : optionsLandscape.lrTbFit,
@@ -173,14 +230,18 @@ class _ExampleState extends State<Example> {
                   maxHeight: height,
                   child: CenterY(
                     child: IconButton(
-                        icon: const Icon(Icons.arrow_back), onPressed: () {}),
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () =>
+                            info('A button just for the decoration :)')),
                   ),
                 ),
                 rightActions: (_, double height) => ClipTop(
                   maxHeight: height,
                   child: CenterY(
                     child: IconButton(
-                        icon: const Icon(Icons.settings), onPressed: () {}),
+                        icon: const Icon(Icons.settings),
+                        onPressed: () =>
+                            info('A button just for the decoration :)')),
                   ),
                 ),
                 title: CustomTitle(
@@ -362,6 +423,20 @@ class _ExampleState extends State<Example> {
           padding: const EdgeInsets.only(left: leftPadding),
           child: child,
         ));
+  }
+
+  void info(String text) {
+    final snackBar = SnackBar(
+      content: Text(text),
+      action: SnackBarAction(
+        label: 'Info',
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 

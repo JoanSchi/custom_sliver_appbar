@@ -20,8 +20,44 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Text Image Appbar',
       theme: ThemeData(
-        primarySwatch: Colors.amber,
         useMaterial3: true,
+        colorScheme: const ColorScheme(
+          brightness: Brightness.light,
+          primary: Color.fromARGB(255, 17, 85, 114),
+          onPrimary: Color(0xFFFFFFFF),
+          primaryContainer: Color(0xFFf1f5fd),
+          onPrimaryContainer: Color.fromARGB(255, 5, 66, 92),
+          secondary: Color(0xFF625B71),
+          onSecondary: Color(0xFFFFFFFF),
+          secondaryContainer:
+              Color.fromARGB(255, 174, 188, 193), //Color(0xFFE8DEF8),
+          onSecondaryContainer: Color.fromARGB(255, 5, 66, 92),
+          tertiary: Color(0xFF7E5260),
+          onTertiary: Color(0xFFFFFFFF),
+          tertiaryContainer: Color(0xFFFFD9E3),
+          onTertiaryContainer: Color(0xFF31101D),
+          error: Color(0xFFBA1A1A),
+          errorContainer: Color(0xFFFFDAD6),
+          onError: Color(0xFFFFFFFF),
+          onErrorContainer: Color(0xFF410002),
+          background: Colors.white, // Color(0xFFFFFBFF),
+          onBackground: Color(0xFF1C1B1E),
+          surface: Color.fromARGB(255, 246, 250, 253),
+          //onSurface: Text, icons
+          onSurface: Color.fromARGB(255, 3, 50, 71),
+          surfaceVariant: Color(0xFFE7E0EB),
+          onSurfaceVariant: Color(0xFF49454E),
+          outline: Color(0xFF7A757F),
+          onInverseSurface: Color(0xFFF4EFF4),
+          inverseSurface: Color(0xFF313033),
+          inversePrimary: Color(0xFF70b7d3),
+          shadow: Color(0xFF000000),
+          //surfaceTint: Tint background calendar
+          surfaceTint: Color(0xFF70b7d3),
+          //outlineVariant: Divider
+          outlineVariant: Color(0xFFCAC4CF),
+          scrim: Color(0xFF000000),
+        ),
       ),
       home: const AdjustScrollConfiguration(
           child: MyHomePage(title: 'Text Image Appbar')),
@@ -56,7 +92,8 @@ class AdjustScrollConfiguration extends StatelessWidget {
                     top: 0.0,
                     right: 0.0,
                     height: 24.0,
-                    child: Container(color: Colors.pink.withOpacity(0.1))),
+                    child: Container(
+                        color: const Color(0xFF70b7d3).withOpacity(0.2))),
               ],
             ));
       } else {
@@ -99,6 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final mediaQuery = MediaQuery.of(context);
     final orientation = mediaQuery.orientation;
+    final theme = Theme.of(context);
 
     double minImageHeight = 50.0;
     double maxImageHeight = mediaQuery.size.shortestSide / 2.0;
@@ -114,6 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
           backgroundColor: Colors.white,
           appBar: TitleImageAppBar(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
               orientation: orientation,
               elevation: options.elevation,
               elevationScrolledUnder: options.elevationScrolledUnder,
@@ -137,7 +176,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.arrow_back),
-                          onPressed: () {},
+                          onPressed: () =>
+                              info('A button just for the decoration :)'),
                         )
                       ],
                     )
@@ -153,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   required double safeTopPadding,
                   required bool scrolledUnder,
                   Widget? child}) {
-                const leftPadding = 56.0;
+                const leftPadding = 0.0; //56.0;
                 return Material(
                     color: scrolledUnder
                         ? options.backgroundColorScrolledUnder
@@ -163,7 +203,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       leftInsets: leftPadding,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: leftPadding),
+                      padding:
+                          const EdgeInsets.only(left: leftPadding) + padding,
                       child: child,
                     ));
               }),
@@ -179,8 +220,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(24.0))),
-                            color:
-                                index.isOdd ? Colors.white : Colors.amber[50],
+                            color: index.isOdd
+                                ? theme.colorScheme.surface
+                                : theme.colorScheme.surfaceTint,
                             child: SizedBox(
                                 height: 200.0,
                                 child: Center(
@@ -209,8 +251,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(24.0))),
-                            color:
-                                index.isOdd ? Colors.white : Colors.amber[50],
+                            color: index.isOdd
+                                ? theme.colorScheme.surface
+                                : theme.colorScheme.surfaceTint,
                             child: SizedBox(
                                 height: 200.0,
                                 child: Center(
@@ -224,6 +267,20 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           )),
     );
+  }
+
+  void info(String text) {
+    final snackBar = SnackBar(
+      content: Text(text),
+      action: SnackBarAction(
+        label: 'Info',
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 

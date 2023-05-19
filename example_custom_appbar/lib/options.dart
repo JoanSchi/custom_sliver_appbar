@@ -22,7 +22,7 @@ class Options {
     this.imageBehindAppbarStatus = false,
     this.backgroundColor = Colors.white,
     this.backgroundColorScrolledUnder =
-        const Color.fromARGB(255, 252, 252, 245),
+        const Color.fromARGB(255, 236, 247, 251),
     this.elevation = 0.0,
     this.elevationScrolledUnder = 1.0,
   });

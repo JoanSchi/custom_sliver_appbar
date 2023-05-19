@@ -12,7 +12,7 @@ enum LbrItem { left, bottom, right }
 class LbrLayout extends MultiChildRenderObjectWidget {
   final LbrFit lbrFit;
 
-  LbrLayout({
+  const LbrLayout({
     Key? key,
     List<Widget> children = const <Widget>[],
     required this.lbrFit,

@@ -7,7 +7,7 @@ class About extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const headerSize = 20.0;
+    const headerSize = 18.0;
     const paragraphSize = 18.0;
 
     bool noMobile = false;
@@ -29,9 +29,9 @@ class About extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
       ),
-      color: Colors.white,
+      color: theme.colorScheme.onPrimary,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(children: [
           const Text('About', style: TextStyle(fontSize: 24.0)),
           const SizedBox(

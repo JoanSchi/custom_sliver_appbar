@@ -12,7 +12,7 @@ class TitleImageLayout extends MultiChildRenderObjectWidget {
   final bool isPortrait;
   final double space;
 
-  TitleImageLayout({
+  const TitleImageLayout({
     Key? key,
     List<Widget> children = const <Widget>[],
     this.isPortrait = true,
