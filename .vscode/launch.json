@@ -30,6 +30,13 @@
             "request": "launch",
             "type": "dart"
         },
+        {
+            "name": "example_custom_appbar (profile mode)",
+            "cwd": "example_custom_appbar",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
         // {
         //     "name": "example",
         //     "cwd": "example",
