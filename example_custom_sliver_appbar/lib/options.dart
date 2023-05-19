@@ -82,9 +82,15 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final avaliableHeight =
-        (MediaQuery.of(context).size.height / 3 * 2).roundToDouble();
 
+    final height = MediaQuery.of(context).size.height;
+    final double avaliableHeight =
+        height > 0.0 ? (height / 3 * 2).roundToDouble() : 0.0;
+
+    //Why a first build without a height?
+    if (height < 56.0) {
+      return const SizedBox.shrink();
+    }
     options.checkAvailableHeight(avaliableHeight);
 
     return Card(
@@ -103,25 +109,26 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
               const Text(
                 'Minimum',
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Slider(
-                        min: 0.0,
-                        divisions: options.maxExtent.toInt(),
-                        max: options.maxExtent,
-                        value: options.minExtent,
-                        onChanged: minExtentOnChange,
-                        onChangeEnd: minExtentOnChange),
-                  ),
-                  SizedBox(
-                      width: 30,
-                      child: Text(
-                        '${options.minExtent.toInt()}',
-                        textAlign: TextAlign.end,
-                      ))
-                ],
-              ),
+              if (options.maxExtent >= 1.0)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Slider(
+                          min: 0.0,
+                          divisions: options.maxExtent.toInt(),
+                          max: options.maxExtent,
+                          value: options.minExtent,
+                          onChanged: minExtentOnChange,
+                          onChangeEnd: minExtentOnChange),
+                    ),
+                    SizedBox(
+                        width: 30,
+                        child: Text(
+                          '${options.minExtent.toInt()}',
+                          textAlign: TextAlign.end,
+                        ))
+                  ],
+                ),
               Row(children: [
                 const SizedBox(
                   width: 24.0,
@@ -144,25 +151,26 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
               const Text(
                 'Maximum',
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Slider(
-                        min: 56.0,
-                        max: avaliableHeight,
-                        divisions: (avaliableHeight - 56.0).toInt(),
-                        value: options.maxExtent,
-                        onChanged: maxExtentOnChange,
-                        onChangeEnd: maxExtentOnChange),
-                  ),
-                  SizedBox(
-                      width: 30,
-                      child: Text(
-                        '${options.maxExtent.toInt()}',
-                        textAlign: TextAlign.end,
-                      ))
-                ],
-              ),
+              if (56.0 + 1.0 <= avaliableHeight)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Slider(
+                          min: 56.0,
+                          max: avaliableHeight,
+                          divisions: (avaliableHeight - 56.0).toInt(),
+                          value: options.maxExtent,
+                          onChanged: maxExtentOnChange,
+                          onChangeEnd: maxExtentOnChange),
+                    ),
+                    SizedBox(
+                        width: 30,
+                        child: Text(
+                          '${options.maxExtent.toInt()}',
+                          textAlign: TextAlign.end,
+                        ))
+                  ],
+                ),
               Row(children: [
                 const SizedBox(
                   width: 24.0,
@@ -181,26 +189,27 @@ class _OptionsCardPortraitState extends State<OptionsCardPortrait> {
               const Text(
                 'Floating',
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Slider(
-                        min: options.minExtent,
-                        max: options.maxExtent,
-                        divisions:
-                            (options.maxExtent - options.minExtent).toInt(),
-                        value: options.floatingExtent,
-                        onChanged: floatingExtentOnChange,
-                        onChangeEnd: floatingExtentOnChange),
-                  ),
-                  SizedBox(
-                      width: 30,
-                      child: Text(
-                        '${options.floatingExtent.toInt()}',
-                        textAlign: TextAlign.end,
-                      )),
-                ],
-              ),
+              if (options.minExtent < options.maxExtent)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Slider(
+                          min: options.minExtent,
+                          max: options.maxExtent,
+                          divisions:
+                              (options.maxExtent - options.minExtent).toInt(),
+                          value: options.floatingExtent,
+                          onChanged: floatingExtentOnChange,
+                          onChangeEnd: floatingExtentOnChange),
+                    ),
+                    SizedBox(
+                        width: 30,
+                        child: Text(
+                          '${options.floatingExtent.toInt()}',
+                          textAlign: TextAlign.end,
+                        )),
+                  ],
+                ),
               Row(
                 children: [
                   const SizedBox(

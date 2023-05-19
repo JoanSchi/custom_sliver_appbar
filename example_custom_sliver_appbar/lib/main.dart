@@ -77,7 +77,8 @@ class AdjustScrollConfiguration extends StatelessWidget {
     final platform = defaultTargetPlatform;
 
     if (platform == TargetPlatform.android || platform == TargetPlatform.iOS) {
-      return const Example();
+      return ScrollConfiguration(
+          behavior: MyScrollBehavior(), child: const Example());
     } else {
       final media = MediaQuery.of(context);
       final padding = media.padding;
@@ -124,10 +125,19 @@ class MyScrollBehavior extends MaterialScrollBehavior {
   }
 
   @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
+  Set<PointerDeviceKind> get dragDevices {
+    final platform = defaultTargetPlatform;
+    switch (platform) {
+      case TargetPlatform.android:
+      case TargetPlatform.iOS:
+        return super.dragDevices;
+      default:
+        return {
+          PointerDeviceKind.touch,
+          PointerDeviceKind.mouse,
+        };
+    }
+  }
 
   @override
   Widget buildOverscrollIndicator(

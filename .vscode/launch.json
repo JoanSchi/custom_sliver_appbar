@@ -11,13 +11,15 @@
             "type": "dart"
         },
         {
-            "name": "custom_sliver_appbar (profile mode)",
+            "name": "example_custom_sliver_appbar (profile mode)",
+            "cwd": "example_custom_sliver_appbar",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "custom_sliver_appbar (release mode)",
+            "name": "example_custom_sliver_appbar (release mode)",
+            "cwd": "example_custom_sliver_appbar",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
