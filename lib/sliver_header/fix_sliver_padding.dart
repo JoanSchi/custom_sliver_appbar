@@ -23,11 +23,11 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-class MySliverSafeArea extends StatelessWidget {
+class FixSliverSafeArea extends StatelessWidget {
   /// Creates a sliver that avoids operating system interfaces.
   ///
   /// The [left], [top], [right], [bottom], and [minimum] arguments must not be null.
-  const MySliverSafeArea({
+  const FixSliverSafeArea({
     super.key,
     this.left = true,
     this.top = true,
@@ -65,7 +65,7 @@ class MySliverSafeArea extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(debugCheckHasMediaQuery(context));
     final EdgeInsets padding = MediaQuery.paddingOf(context);
-    return MySliverPadding(
+    return FixSliverPadding(
       padding: EdgeInsets.only(
         left: math.max(left ? padding.left : 0.0, minimum.left),
         top: math.max(top ? padding.top : 0.0, minimum.top),
@@ -97,11 +97,11 @@ class MySliverSafeArea extends StatelessWidget {
   }
 }
 
-class MySliverPadding extends SingleChildRenderObjectWidget {
+class FixSliverPadding extends SingleChildRenderObjectWidget {
   /// Creates a sliver that applies padding on each side of another sliver.
   ///
   /// The [padding] argument must not be null.
-  const MySliverPadding({
+  const FixSliverPadding({
     super.key,
     required this.padding,
     Widget? sliver,
@@ -111,8 +111,8 @@ class MySliverPadding extends SingleChildRenderObjectWidget {
   final EdgeInsetsGeometry padding;
 
   @override
-  RenderSliverPadding createRenderObject(BuildContext context) {
-    return RenderSliverPadding(
+  FixRenderSliverPadding createRenderObject(BuildContext context) {
+    return FixRenderSliverPadding(
       padding: padding,
       textDirection: Directionality.of(context),
     );
@@ -120,7 +120,7 @@ class MySliverPadding extends SingleChildRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, RenderSliverPadding renderObject) {
+      BuildContext context, FixRenderSliverPadding renderObject) {
     renderObject
       ..padding = padding
       ..textDirection = Directionality.of(context);
@@ -135,7 +135,7 @@ class MySliverPadding extends SingleChildRenderObjectWidget {
 
 /// Insets a [RenderSliver] by applying [resolvedPadding] on each side.
 ///
-/// A [RenderSliverEdgeInsetsPadding] subclass wraps the [SliverGeometry.layoutExtent]
+/// A [FixRenderSliverEdgeInsetsPadding] subclass wraps the [SliverGeometry.layoutExtent]
 /// of its child. Any incoming [SliverConstraints.overlap] is ignored and not
 /// passed on to the child.
 ///
@@ -144,7 +144,7 @@ class MySliverPadding extends SingleChildRenderObjectWidget {
 /// undesired effects. For example, For example, wrapping a [SliverPersistentHeader] with
 /// `pinned:true` will cause only the appbar to stay pinned while the padding will scroll away.
 /// {@endtemplate}
-abstract class RenderSliverEdgeInsetsPadding extends RenderSliver
+abstract class FixRenderSliverEdgeInsetsPadding extends RenderSliver
     with RenderObjectWithChildMixin<RenderSliver> {
   /// The amount to pad the child in each dimension.
   ///
@@ -470,16 +470,16 @@ abstract class RenderSliverEdgeInsetsPadding extends RenderSliver
 
 /// Insets a [RenderSliver], applying padding on each side.
 ///
-/// A [RenderSliverPadding] object wraps the [SliverGeometry.layoutExtent] of
+/// A [FixRenderSliverPadding] object wraps the [SliverGeometry.layoutExtent] of
 /// its child. Any incoming [SliverConstraints.overlap] is ignored and not
 /// passed on to the child.
 ///
 /// {@macro flutter.rendering.RenderSliverEdgeInsetsPadding}
-class RenderSliverPadding extends RenderSliverEdgeInsetsPadding {
+class FixRenderSliverPadding extends FixRenderSliverEdgeInsetsPadding {
   /// Creates a render object that insets its child in a viewport.
   ///
   /// The [padding] argument must not be null and must have non-negative insets.
-  RenderSliverPadding({
+  FixRenderSliverPadding({
     required EdgeInsetsGeometry padding,
     TextDirection? textDirection,
     RenderSliver? child,

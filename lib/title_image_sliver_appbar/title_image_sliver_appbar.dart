@@ -22,7 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_sliver_appbar/sliver_header/persistant_header_animation.dart';
 import 'package:custom_sliver_appbar/sliver_header/sliver_header_render.dart';
-import '../my_sliver_padding.dart';
+import '../sliver_header/fix_sliver_padding.dart';
 import '../sliver_header/clip_top.dart';
 import '../sliver_header/sliver_header.dart';
 import 'left_right_to_bottom_layout.dart';
@@ -91,55 +91,54 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
     debugPrint('platform ${Theme.of(context).platform}');
 
     final safeTop = MediaQuery.of(context).padding.top;
-
-    return MySliverSafeArea(
-      top: false,
-      sliver: CustomAdjustedSliverPersistentHeader(
-        pinned: widget.pinned,
-        floating: widget.floating,
-        delegate: widget.lrTbFit == LrTbFit.no
-            ? TextImageSliverPersistentHeaderDelegate(
-                vsync: this,
-                backgroundColor: widget.backgroundColor,
-                scrolledUnderBackground: widget.scrolledUnderBackground,
-                elevation: widget.elevation,
-                scrolledUnderElevation: widget.scrolledUnderElevation,
-                title: widget.title,
-                image: widget.image,
-                leftActions: widget.leftActions,
-                rightActions: widget.rightActions,
-                padding: widget.padding,
-                appBarBackgroundBuilder: widget.appBarBackgroundBuilder,
-                bottom: widget.bottom,
-                floatingExtent: widget.floatingExtent,
-                orientation: widget.orientation,
-                safeTop: safeTop,
-                minCenter: widget.minCenter,
-                maxCenter: widget.maxCenter,
-                minExtent: widget.minExtent,
-                tween: widget.tween)
-            : LeftRightToBottomTextImageSliverPersistentHeaderDelegate(
-                vsync: this,
-                backgroundColor: widget.backgroundColor,
-                scrolledUnderBackground: widget.scrolledUnderBackground,
-                elevation: widget.elevation,
-                scrolledUnderElevation: widget.scrolledUnderElevation,
-                title: widget.title,
-                image: widget.image,
-                leftActions: widget.leftActions,
-                rightActions: widget.rightActions,
-                padding: widget.padding,
-                appBarBackgroundBuilder: widget.appBarBackgroundBuilder,
-                bottom: widget.bottom,
-                floatingExtent: widget.floatingExtent,
-                orientation: widget.orientation,
-                safeTop: safeTop,
-                minCenter: widget.minCenter,
-                maxCenter: widget.maxCenter,
-                minExtent: widget.minExtent,
-                lrTbFit: widget.lrTbFit,
-                tween: widget.tween),
-      ),
+// MySliverSafeArea(
+//       top: false,
+//       sliver:
+    return CustomAdjustedSliverPersistentHeader(
+      pinned: widget.pinned,
+      floating: widget.floating,
+      delegate: widget.lrTbFit == LrTbFit.no
+          ? TextImageSliverPersistentHeaderDelegate(
+              vsync: this,
+              backgroundColor: widget.backgroundColor,
+              scrolledUnderBackground: widget.scrolledUnderBackground,
+              elevation: widget.elevation,
+              scrolledUnderElevation: widget.scrolledUnderElevation,
+              title: widget.title,
+              image: widget.image,
+              leftActions: widget.leftActions,
+              rightActions: widget.rightActions,
+              padding: widget.padding,
+              appBarBackgroundBuilder: widget.appBarBackgroundBuilder,
+              bottom: widget.bottom,
+              floatingExtent: widget.floatingExtent,
+              orientation: widget.orientation,
+              safeTop: safeTop,
+              minCenter: widget.minCenter,
+              maxCenter: widget.maxCenter,
+              minExtent: widget.minExtent,
+              tween: widget.tween)
+          : LeftRightToBottomTextImageSliverPersistentHeaderDelegate(
+              vsync: this,
+              backgroundColor: widget.backgroundColor,
+              scrolledUnderBackground: widget.scrolledUnderBackground,
+              elevation: widget.elevation,
+              scrolledUnderElevation: widget.scrolledUnderElevation,
+              title: widget.title,
+              image: widget.image,
+              leftActions: widget.leftActions,
+              rightActions: widget.rightActions,
+              padding: widget.padding,
+              appBarBackgroundBuilder: widget.appBarBackgroundBuilder,
+              bottom: widget.bottom,
+              floatingExtent: widget.floatingExtent,
+              orientation: widget.orientation,
+              safeTop: safeTop,
+              minCenter: widget.minCenter,
+              maxCenter: widget.maxCenter,
+              minExtent: widget.minExtent,
+              lrTbFit: widget.lrTbFit,
+              tween: widget.tween),
     );
   }
 }
