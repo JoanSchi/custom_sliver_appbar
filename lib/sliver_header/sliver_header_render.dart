@@ -394,9 +394,10 @@ abstract class CustomRenderSliverScrollingPersistentHeader
     final double maxExtent = this.maxExtent;
     final double paintExtent = maxExtent - constraints.scrollOffset;
     geometry = SliverGeometry(
-      scrollExtent: maxExtent - minExtent,
+      scrollExtent: maxExtent,
       paintOrigin: math.min(constraints.overlap, 0.0),
-      paintExtent: paintExtent.clamp(0.0, constraints.remainingPaintExtent),
+      paintExtent:
+          clampDouble(paintExtent, 0.0, constraints.remainingPaintExtent),
       maxPaintExtent: maxExtent + stretchOffset,
       hasVisualOverflow:
           true, // Conservatively say we do have overflow to avoid complexity.
@@ -411,9 +412,10 @@ abstract class CustomRenderSliverScrollingPersistentHeader
     layoutChild(constraints.scrollOffset, maxExtent);
     final double paintExtent = maxExtent - constraints.scrollOffset;
     geometry = SliverGeometry(
-      scrollExtent: maxExtent - minExtent,
+      scrollExtent: maxExtent,
       paintOrigin: math.min(constraints.overlap, 0.0),
-      paintExtent: paintExtent.clamp(0.0, constraints.remainingPaintExtent),
+      paintExtent:
+          clampDouble(paintExtent, 0.0, constraints.remainingPaintExtent),
       maxPaintExtent: maxExtent,
       hasVisualOverflow:
           true, // Conservatively say we do have overflow to avoid complexity.
@@ -463,12 +465,14 @@ abstract class CustomRenderSliverPinnedPersistentHeader
         overlapsContent: overlapsContent);
     final double effectiveRemainingPaintExtent =
         math.max(0, constraints.remainingPaintExtent - constraints.overlap);
-    final double layoutExtent = (maxExtent - constraints.scrollOffset)
-        .clamp(0.0, effectiveRemainingPaintExtent);
+    final double layoutExtent = clampDouble(
+        maxExtent - constraints.scrollOffset,
+        0.0,
+        effectiveRemainingPaintExtent);
     final double stretchOffset =
         stretchConfiguration != null ? constraints.overlap.abs() : 0.0;
     geometry = SliverGeometry(
-      scrollExtent: maxExtent - minExtent,
+      scrollExtent: maxExtent,
       paintOrigin: constraints.overlap,
       paintExtent: math.min(childExtent, effectiveRemainingPaintExtent),
       layoutExtent: layoutExtent,
@@ -651,10 +655,12 @@ abstract class CustomRenderSliverFloatingPersistentHeader
     final double paintExtent = maxExtent - _effectiveScrollOffset!;
     final double layoutExtent = maxExtent - constraints.scrollOffset;
     geometry = SliverGeometry(
-      scrollExtent: maxExtent - minExtent,
+      scrollExtent: maxExtent,
       paintOrigin: math.min(constraints.overlap, 0.0),
-      paintExtent: paintExtent.clamp(0.0, constraints.remainingPaintExtent),
-      layoutExtent: layoutExtent.clamp(0.0, constraints.remainingPaintExtent),
+      paintExtent:
+          clampDouble(paintExtent, 0.0, constraints.remainingPaintExtent),
+      layoutExtent:
+          clampDouble(layoutExtent, 0.0, constraints.remainingPaintExtent),
       maxPaintExtent: maxExtent + stretchOffset,
       hasVisualOverflow:
           true, // Conservatively say we do have overflow to avoid complexity.
@@ -900,23 +906,26 @@ abstract class RenderSliverFloatingPinnedPersistentHeader
         : constraints.remainingPaintExtent;
     final double maxExtent = this.maxExtent;
     final double paintExtent = maxExtent - _effectiveScrollOffset!;
-    final double clampedPaintExtent = paintExtent.clamp(
+    final double clampedPaintExtent = clampDouble(
+      paintExtent,
       minAllowedExtent,
       constraints.remainingPaintExtent,
     );
     final double layoutExtent = maxExtent - constraints.scrollOffset;
     final double stretchOffset =
         stretchConfiguration != null ? constraints.overlap.abs() : 0.0;
+
     geometry = SliverGeometry(
-      scrollExtent: maxExtent - minExtent,
+      scrollExtent: maxExtent,
       paintOrigin: math.min(constraints.overlap, 0.0),
       paintExtent: clampedPaintExtent,
-      layoutExtent: layoutExtent.clamp(0.0, clampedPaintExtent),
+      layoutExtent: clampDouble(layoutExtent, 0.0, clampedPaintExtent),
       maxPaintExtent: maxExtent + stretchOffset,
       maxScrollObstructionExtent: minExtent,
       hasVisualOverflow:
           true, // Conservatively say we do have overflow to avoid complexity.
     );
+
     return 0.0;
   }
 }

@@ -1,17 +1,17 @@
 // Copyright (C) 2023 Joan Schipper
-// 
+//
 // This file is part of custom_sliver_appbar.
-// 
+//
 // custom_sliver_appbar is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // custom_sliver_appbar is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with custom_sliver_appbar.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -271,19 +271,11 @@ class _TitleImageAppBarState extends State<TitleImageAppBar> {
         widget.imageIncludeSafeTop && imageBuilder != null ? 0.0 : topPadding;
 
     return Stack(children: [
+      Positioned(left: 0.0, top: topCenter, right: 0.0, bottom: 0.0, child: w),
       if (widget.leftActions != null)
-        Positioned(
-            left: 0.0,
-            top: topPadding,
-            height: widget.titleHeight,
-            child: widget.leftActions!),
+        Positioned(left: 0.0, top: topPadding, child: widget.leftActions!),
       if (widget.rightActions != null)
-        Positioned(
-            right: 0.0,
-            top: topPadding,
-            height: widget.titleHeight,
-            child: widget.rightActions!),
-      Positioned(left: 0.0, top: topCenter, right: 0.0, bottom: 0.0, child: w)
+        Positioned(right: 0.0, top: topPadding, child: widget.rightActions!),
     ]);
   }
 

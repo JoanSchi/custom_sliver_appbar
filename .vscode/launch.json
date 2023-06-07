@@ -5,6 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "example_only_slivers",
+            "cwd": "example_only_slivers",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
             "name": "example_custom_sliver_appbar",
             "cwd": "example_custom_sliver_appbar",
             "request": "launch",

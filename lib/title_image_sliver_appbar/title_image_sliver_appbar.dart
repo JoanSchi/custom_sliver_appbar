@@ -1,17 +1,17 @@
 // Copyright (C) 2023 Joan Schipper
-// 
+//
 // This file is part of custom_sliver_appbar.
-// 
+//
 // custom_sliver_appbar is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // custom_sliver_appbar is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with custom_sliver_appbar.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_sliver_appbar/sliver_header/persistant_header_animation.dart';
 import 'package:custom_sliver_appbar/sliver_header/sliver_header_render.dart';
+import '../my_sliver_padding.dart';
 import '../sliver_header/clip_top.dart';
 import '../sliver_header/sliver_header.dart';
 import 'left_right_to_bottom_layout.dart';
@@ -91,7 +92,7 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
 
     final safeTop = MediaQuery.of(context).padding.top;
 
-    return SliverSafeArea(
+    return MySliverSafeArea(
       top: false,
       sliver: CustomAdjustedSliverPersistentHeader(
         pinned: widget.pinned,
@@ -195,6 +196,9 @@ class TextImageSliverPersistentHeaderDelegate
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent,
       bool scrolledContent) {
+    if (shrinkOffset > maxExtent - minExtent) {
+      shrinkOffset = maxExtent - minExtent;
+    }
     double height = maxExtent - shrinkOffset - padding.vertical;
 
     final List<Widget> children = [];
@@ -424,6 +428,9 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent,
       bool scrolledContent) {
+    if (shrinkOffset > maxExtent - minExtent) {
+      shrinkOffset = maxExtent - minExtent;
+    }
     double height = maxExtent - shrinkOffset - padding.vertical;
 
     _animation.shrinkOffset = shrinkOffset;
@@ -492,7 +499,7 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
               : w,
         ));
       } else if (title == null && image != null) {
-        final disappear = _minExtent < minCenter;
+        final disappear = _minExtent <= minCenter;
 
         double h = height -
             bottomHeight -
@@ -546,6 +553,7 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
                     minimum: minCenter,
                     maximum: maxCenter,
                     shrinkOffset: shrinkOffset,
+                    tween: tween,
                   )));
       }
     }
