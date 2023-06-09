@@ -565,20 +565,21 @@ abstract class CustomRenderSliverFloatingPersistentHeader
   /// Creates a sliver that shrinks when it hits the start of the viewport, then
   /// scrolls off, and comes back immediately when the user reverses the scroll
   /// direction.
-  CustomRenderSliverFloatingPersistentHeader({
-    RenderBox? child,
-    AnimationController? controller,
-    this.snapConfiguration,
-    OverScrollHeaderStretchConfiguration? stretchConfiguration,
-    required this.showOnScreenConfiguration,
-  })  : _controller = controller,
+  CustomRenderSliverFloatingPersistentHeader(
+      {RenderBox? child,
+      AnimationController? controller,
+      this.snapConfiguration,
+      OverScrollHeaderStretchConfiguration? stretchConfiguration,
+      required this.showOnScreenConfiguration,
+      required this.correctForSnap})
+      : _controller = controller,
         super(
           child: child,
           stretchConfiguration: stretchConfiguration,
         ) {
     //_controller?.addListener(animationChange);
   }
-
+  bool correctForSnap;
   late Animation<double> _animation;
   double? _lastActualScrollOffset;
   double? _effectiveScrollOffset;
@@ -722,7 +723,7 @@ abstract class CustomRenderSliverFloatingPersistentHeader
       snap.duration,
       direction == ScrollDirection.forward
           ? maxExtent - floatingExtent
-          : maxExtent - minExtent,
+          : maxExtent,
       snap.curve,
     );
     controller?.forward(from: 0.0);
@@ -738,12 +739,11 @@ abstract class CustomRenderSliverFloatingPersistentHeader
   void performLayout() {
     final SliverConstraints constraints = this.constraints;
     final double maxExtent = this.maxExtent;
-    //Joan Add to maxExtent - minExtent, this is the maximal effiectiveScrollOffset
     if (_lastActualScrollOffset !=
             null && // We've laid out at least once to get an initial position, and either
         ((constraints.scrollOffset <
                 _lastActualScrollOffset!) || // we are scrolling back, so should reveal, or
-            (_effectiveScrollOffset! < maxExtent - minExtent))) {
+            (_effectiveScrollOffset! < maxExtent))) {
       // some part of it is visible, so should shrink or reveal as appropriate.
       double delta = _lastActualScrollOffset! - constraints.scrollOffset;
 
@@ -752,28 +752,39 @@ abstract class CustomRenderSliverFloatingPersistentHeader
               (_lastStartedScrollDirection != null &&
                   _lastStartedScrollDirection == ScrollDirection.forward);
       if (allowFloatingExpansion) {
-        if (_effectiveScrollOffset! > maxExtent - minExtent) {
-          _effectiveScrollOffset = maxExtent - minExtent;
-        } // pretend we're just at the limit.
+        if (_effectiveScrollOffset! > maxExtent) {
+          // We're scrolled off-screen, but should reveal, so pretend we're just at the limit.
+          _effectiveScrollOffset = maxExtent;
+        }
       } else {
         if (delta > 0.0) {
+          // Disallow the expansion. (But allow shrinking, i.e. delta < 0.0 is fine.)
           delta = 0.0;
-        } // disallow the expansion. (But allow shrinking, i.e. delta < 0.0 is fine.)
+        }
       }
-      _effectiveScrollOffset = (_effectiveScrollOffset! - delta)
-          .clamp(0.0, constraints.scrollOffset);
+
+      //Added by Joan removing injectors from NestedScrollView
+      // debugPrint(
+      //     '----------userScrollDirection: ${constraints.userScrollDirection} _effectiveScrollOffset ${_effectiveScrollOffset!.toInt()} scrollOffset ${constraints.scrollOffset.toInt()} delta ${(constraints.scrollOffset - _effectiveScrollOffset!).toInt()}');
+      if (correctForSnap &&
+          constraints.userScrollDirection == ScrollDirection.forward &&
+          _effectiveScrollOffset! < constraints.scrollOffset) {
+        delta = 0.0;
+      }
+
+      _effectiveScrollOffset = clampDouble(
+          _effectiveScrollOffset! - delta, 0.0, constraints.scrollOffset);
     } else {
       _effectiveScrollOffset = constraints.scrollOffset;
     }
     final bool overlapsContent =
         _effectiveScrollOffset! < constraints.scrollOffset;
 
-    final bool scrolledContent =
-        (maxExtent - minExtent - constraints.scrollOffset).abs() <
-            kScrollTolerance;
-
-    layoutChild(_effectiveScrollOffset!, maxExtent,
-        overlapsContent: overlapsContent, scrolledContent: scrolledContent);
+    layoutChild(
+      _effectiveScrollOffset!,
+      maxExtent,
+      overlapsContent: overlapsContent,
+    );
     _childPosition = updateGeometry();
     _lastActualScrollOffset = constraints.scrollOffset;
   }
@@ -890,12 +901,14 @@ abstract class RenderSliverFloatingPinnedPersistentHeader
     FloatingHeaderSnapConfiguration? snapConfiguration,
     OverScrollHeaderStretchConfiguration? stretchConfiguration,
     PersistentHeaderShowOnScreenConfiguration? showOnScreenConfiguration,
+    required bool correctForSnap,
   }) : super(
           child: child,
           controller: controller,
           snapConfiguration: snapConfiguration,
           stretchConfiguration: stretchConfiguration,
           showOnScreenConfiguration: showOnScreenConfiguration,
+          correctForSnap: correctForSnap,
         );
 
   @override
@@ -914,7 +927,6 @@ abstract class RenderSliverFloatingPinnedPersistentHeader
     final double layoutExtent = maxExtent - constraints.scrollOffset;
     final double stretchOffset =
         stretchConfiguration != null ? constraints.overlap.abs() : 0.0;
-
     geometry = SliverGeometry(
       scrollExtent: maxExtent,
       paintOrigin: math.min(constraints.overlap, 0.0),
@@ -925,7 +937,6 @@ abstract class RenderSliverFloatingPinnedPersistentHeader
       hasVisualOverflow:
           true, // Conservatively say we do have overflow to avoid complexity.
     );
-
     return 0.0;
   }
 }

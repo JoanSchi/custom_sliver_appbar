@@ -71,11 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: CustomScrollView(slivers: [
         TextImageSliverAppBar(
+          correctForSnap: true,
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           // appBarBackgroundBuilder: builderBackground,
           minExtent: 80,
           floatingExtent: 136,
-          maxCenter: 200,
+          maxCenter: 250,
           tween: Tween(begin: 42, end: 36),
           scrolledUnderBackground: const Color.fromARGB(255, 236, 247, 251),
           lrTbFit: LrTbFit.fit,
@@ -118,17 +119,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         SliverList(
             delegate: SliverChildListDelegate.fixed([
-          Container(
-            height: 400,
-            color: Colors.pink,
-          ),
+          for (int i = 0; i < 10; i++)
+            Container(
+              height: 100,
+              color:
+                  i % 2 == 0 ? Colors.pink : Color.fromARGB(255, 248, 229, 235),
+            ),
+          const Center(child: Text('Simpel textfield')),
           TextField(
             controller: textEditingController,
           ),
-          Container(
-            height: 300,
-            color: Colors.pink,
-          ),
+          for (int i = 0; i < 10; i++)
+            Container(
+              height: 100,
+              color:
+                  i % 2 == 0 ? Colors.pink : Color.fromARGB(255, 248, 229, 235),
+            ),
         ]))
       ]),
       // This trailing comma makes auto-formatting nicer for build methods.

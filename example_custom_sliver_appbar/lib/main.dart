@@ -1,17 +1,17 @@
 // Copyright (C) 2023 Joan Schipper
-// 
+//
 // This file is part of custom_sliver_appbar.
-// 
+//
 // custom_sliver_appbar is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // custom_sliver_appbar is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with custom_sliver_appbar.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -231,81 +231,82 @@ class _ExampleState extends State<Example> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           // These are the slivers that show up in the "outer" scroll view.
           return <Widget>[
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: TextImageSliverAppBar(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                // appBarBackgroundBuilder: builderBackground,
-                minExtent: orientation == Orientation.portrait
-                    ? optionsPortrait.minExtent
-                    : optionsLandscape.minExtent,
-                floatingExtent: orientation == Orientation.portrait
-                    ? optionsPortrait.floatingExtent
-                    : optionsLandscape.floatingExtent,
-                maxCenter: orientation == Orientation.portrait
-                    ? optionsPortrait.maxExtent
-                    : optionsLandscape.maxExtent,
-                tween: orientation == Orientation.portrait
-                    ? Tween(begin: 42, end: 36)
-                    : null,
-                scrolledUnderBackground:
-                    const Color.fromARGB(255, 236, 247, 251),
-                lrTbFit: orientation == Orientation.portrait
-                    ? optionsPortrait.lrTbFit
-                    : optionsLandscape.lrTbFit,
-                leftActions: (_, double height) => ClipTop(
-                  maxHeight: height,
-                  child: CenterY(
-                    child: IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: () =>
-                            info('A button just for the decoration :)')),
-                  ),
+            // SliverOverlapAbsorber(
+            //   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            //   sliver:
+            TextImageSliverAppBar(
+              correctForSnap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              // appBarBackgroundBuilder: builderBackground,
+              minExtent: orientation == Orientation.portrait
+                  ? optionsPortrait.minExtent
+                  : optionsLandscape.minExtent,
+              floatingExtent: orientation == Orientation.portrait
+                  ? optionsPortrait.floatingExtent
+                  : optionsLandscape.floatingExtent,
+              maxCenter: orientation == Orientation.portrait
+                  ? optionsPortrait.maxExtent
+                  : optionsLandscape.maxExtent,
+              tween: orientation == Orientation.portrait
+                  ? Tween(begin: 42, end: 36)
+                  : null,
+              scrolledUnderBackground: const Color.fromARGB(255, 236, 247, 251),
+              lrTbFit: orientation == Orientation.portrait
+                  ? optionsPortrait.lrTbFit
+                  : optionsLandscape.lrTbFit,
+              leftActions: (_, double height) => ClipTop(
+                maxHeight: height,
+                child: CenterY(
+                  child: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () =>
+                          info('A button just for the decoration :)')),
                 ),
-                rightActions: (_, double height) => ClipTop(
-                  maxHeight: height,
-                  child: CenterY(
-                    child: IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () =>
-                            info('A button just for the decoration :)')),
-                  ),
-                ),
-                title: CustomTitle(
-                  title: "Joan's appbar",
-                  textStyleTween: TextStyleTween(
-                      begin: const TextStyle(fontSize: 24.0),
-                      end: const TextStyle(fontSize: 16.0)),
-                  height: Tween(begin: 56.0, end: 56.0),
-                ),
-                image: orientation == Orientation.portrait
-                    ? CustomImage(
-                        includeTopWithMinium:
-                            optionsPortrait.imageBehindStatusbar,
-                        imageBuilder: (_) => const RePositionReSize(
-                          ratioHeight: 1.0,
-                          ratioPosition: Ratio(0.0, 0.0),
-                          child: Image(
-                              image: AssetImage(
-                            'graphics/verf.png',
-                          )),
-                        ),
-                      )
-                    : CustomImage(
-                        includeTopWithMinium:
-                            optionsLandscape.imageBehindStatusbar,
-                        imageBuilder: (_) => const RePositionReSize(
-                              ratioHeight: 1.0,
-                              ratioPosition: Ratio(0.0, 0.0),
-                              child: Image(
-                                  image: AssetImage(
-                                'graphics/verf.png',
-                              )),
-                            )),
-                pinned: true,
-                bottom: bottom,
-                orientation: orientation,
               ),
+              rightActions: (_, double height) => ClipTop(
+                maxHeight: height,
+                child: CenterY(
+                  child: IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () =>
+                          info('A button just for the decoration :)')),
+                ),
+              ),
+              title: CustomTitle(
+                title: "Joan's appbar",
+                textStyleTween: TextStyleTween(
+                    begin: const TextStyle(fontSize: 24.0),
+                    end: const TextStyle(fontSize: 16.0)),
+                height: Tween(begin: 56.0, end: 56.0),
+              ),
+              image: orientation == Orientation.portrait
+                  ? CustomImage(
+                      includeTopWithMinium:
+                          optionsPortrait.imageBehindStatusbar,
+                      imageBuilder: (_) => const RePositionReSize(
+                        ratioHeight: 1.0,
+                        ratioPosition: Ratio(0.0, 0.0),
+                        child: Image(
+                            image: AssetImage(
+                          'graphics/verf.png',
+                        )),
+                      ),
+                    )
+                  : CustomImage(
+                      includeTopWithMinium:
+                          optionsLandscape.imageBehindStatusbar,
+                      imageBuilder: (_) => const RePositionReSize(
+                            ratioHeight: 1.0,
+                            ratioPosition: Ratio(0.0, 0.0),
+                            child: Image(
+                                image: AssetImage(
+                              'graphics/verf.png',
+                            )),
+                          )),
+              pinned: true,
+              bottom: bottom,
+              orientation: orientation,
+              // ),
             ),
           ];
         },
@@ -334,12 +335,12 @@ class _ExampleState extends State<Example> {
                   // the tab view is not on the screen.
                   key: const PageStorageKey<String>('list'),
                   slivers: <Widget>[
-                    SliverOverlapInjector(
-                      // This is the flip side of the SliverOverlapAbsorber
-                      // above.
-                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                          context),
-                    ),
+                    // SliverOverlapInjector(
+                    //   // This is the flip side of the SliverOverlapAbsorber
+                    //   // above.
+                    //   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                    //       context),
+                    // ),
                     const SliverToBoxAdapter(
                         child: Padding(
                       padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
@@ -382,12 +383,13 @@ class _ExampleState extends State<Example> {
                 return CustomScrollView(
                   key: const PageStorageKey<String>('options'),
                   slivers: <Widget>[
-                    SliverOverlapInjector(
-                      // This is the flip side of the SliverOverlapAbsorber
-                      // above.
-                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                          context),
-                    ),
+                    // SliverOverlapInjector(
+                    //   // This is the flip side of the SliverOverlapAbsorber
+                    //   // above.
+                    //   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                    //       context),
+                    // ),
+
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.only(

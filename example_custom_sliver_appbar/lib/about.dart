@@ -57,8 +57,7 @@ class About extends StatelessWidget {
           RichText(
             text: TextSpan(
                 text:
-                    'In 2019 I noticed a small deadzone during scrolling (#47039), after some digging I found out that it was only a small problem.'
-                    ' It seemed that maxScrollObstructionExtent was not passed on to NestedScrollView caused by SliverPadding.'
+                    'In 2019 I noticed a small deadzone during scrolling (a bug).'
                     ' Besides this small issue I wanted also more layout freedom for the appbar, for this reason a custom appbar delegate was made, with a new future floating extent.'
                     ' In this example the default delegate is shown: resizeble title and image below or under the statusbar with adjustable floating extend and the option to animated actions bar besides the bottom widget (tabbar). '
                     '\n\n',

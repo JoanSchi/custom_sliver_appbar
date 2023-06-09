@@ -1,17 +1,17 @@
 // Copyright (C) 2023 Joan Schipper
-// 
+//
 // This file is part of custom_sliver_appbar.
-// 
+//
 // custom_sliver_appbar is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // custom_sliver_appbar is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with custom_sliver_appbar.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -28,12 +28,14 @@ class SnapController extends StatefulWidget {
   final CustomAdjustedSliverPersistentHeaderDelegate delegate;
   final bool pinned;
   final bool floating;
+  final bool correctForSnap;
 
   const SnapController({
     Key? key,
     required this.delegate,
     this.pinned = false,
     this.floating = false,
+    required this.correctForSnap,
   }) : super(key: key);
 
   @override
@@ -72,11 +74,13 @@ class _SnapControllerState extends State<SnapController>
       return _SliverFloatingPinnedPersistentHeader(
         delegate: widget.delegate,
         controller: _controller,
+        correctForSnap: widget.correctForSnap,
       );
     } else {
       return _SliverFloatingPersistentHeader(
         delegate: widget.delegate,
         controller: _controller,
+        correctForSnap: widget.correctForSnap,
       );
     }
   }
@@ -201,6 +205,7 @@ class CustomAdjustedSliverPersistentHeader extends StatelessWidget {
     required this.delegate,
     this.pinned = false,
     this.floating = false,
+    this.correctForSnap = false,
   }) : super(key: key);
 
   /// Configuration for the sliver's layout.
@@ -231,13 +236,22 @@ class CustomAdjustedSliverPersistentHeader extends StatelessWidget {
   /// ignored unless [floating] is true.
   final bool floating;
 
+  final bool correctForSnap;
+
   @override
   Widget build(BuildContext context) {
     if (floating && pinned) {
-      return SnapController(delegate: delegate, pinned: true, floating: true);
+      return SnapController(
+          delegate: delegate,
+          pinned: true,
+          floating: true,
+          correctForSnap: correctForSnap);
     }
     if (pinned) return _SliverPinnedPersistentHeader(delegate: delegate);
-    if (floating) return SnapController(delegate: delegate, floating: true);
+    if (floating) {
+      return SnapController(
+          delegate: delegate, floating: true, correctForSnap: correctForSnap);
+    }
     return _SliverScrollingPersistentHeader(delegate: delegate);
   }
 
@@ -425,12 +439,14 @@ abstract class _SliverPersistentHeaderRenderObjectWidget
       {Key? key,
       required this.delegate,
       this.floating = false,
-      this.controller})
+      this.controller,
+      required this.correctForSnap})
       : super(key: key);
 
   final CustomAdjustedSliverPersistentHeaderDelegate delegate;
   final bool floating;
   final AnimationController? controller;
+  final bool correctForSnap;
 
   @override
   _SliverPersistentHeaderElement createElement() =>
@@ -488,6 +504,7 @@ class _SliverScrollingPersistentHeader
   }) : super(
           key: key,
           delegate: delegate,
+          correctForSnap: false,
         );
 
   @override
@@ -516,10 +533,7 @@ class _SliverPinnedPersistentHeader
   const _SliverPinnedPersistentHeader({
     Key? key,
     required CustomAdjustedSliverPersistentHeaderDelegate delegate,
-  }) : super(
-          key: key,
-          delegate: delegate,
-        );
+  }) : super(key: key, delegate: delegate, correctForSnap: false);
 
   @override
   _CustomRenderSliverPersistentHeaderForWidgetsMixin createRenderObject(
@@ -551,21 +565,23 @@ class _SliverFloatingPersistentHeader
     Key? key,
     required CustomAdjustedSliverPersistentHeaderDelegate delegate,
     required AnimationController controller,
+    required bool correctForSnap,
   }) : super(
             key: key,
             delegate: delegate,
             floating: true,
-            controller: controller);
+            controller: controller,
+            correctForSnap: correctForSnap);
 
   @override
   _CustomRenderSliverPersistentHeaderForWidgetsMixin createRenderObject(
       BuildContext context) {
     return _RenderSliverFloatingPersistentHeaderForWidgets(
-      vsync: controller,
-      snapConfiguration: delegate.snapConfiguration,
-      stretchConfiguration: delegate.stretchConfiguration,
-      showOnScreenConfiguration: delegate.showOnScreenConfiguration,
-    );
+        vsync: controller,
+        snapConfiguration: delegate.snapConfiguration,
+        stretchConfiguration: delegate.stretchConfiguration,
+        showOnScreenConfiguration: delegate.showOnScreenConfiguration,
+        correctForSnap: correctForSnap);
   }
 
   @override
@@ -575,6 +591,7 @@ class _SliverFloatingPersistentHeader
     renderObject.snapConfiguration = delegate.snapConfiguration;
     renderObject.stretchConfiguration = delegate.stretchConfiguration;
     renderObject.showOnScreenConfiguration = delegate.showOnScreenConfiguration;
+    renderObject.correctForSnap = correctForSnap;
   }
 }
 
@@ -587,13 +604,14 @@ class _RenderSliverFloatingPinnedPersistentHeaderForWidgets
     FloatingHeaderSnapConfiguration? snapConfiguration,
     OverScrollHeaderStretchConfiguration? stretchConfiguration,
     PersistentHeaderShowOnScreenConfiguration? showOnScreenConfiguration,
+    required bool correctForSnap,
   }) : super(
-          child: child,
-          controller: controller,
-          snapConfiguration: snapConfiguration,
-          stretchConfiguration: stretchConfiguration,
-          showOnScreenConfiguration: showOnScreenConfiguration,
-        );
+            child: child,
+            controller: controller,
+            snapConfiguration: snapConfiguration,
+            stretchConfiguration: stretchConfiguration,
+            showOnScreenConfiguration: showOnScreenConfiguration,
+            correctForSnap: correctForSnap);
 }
 
 class _SliverFloatingPinnedPersistentHeader
@@ -602,22 +620,24 @@ class _SliverFloatingPinnedPersistentHeader
     Key? key,
     required CustomAdjustedSliverPersistentHeaderDelegate delegate,
     required AnimationController controller,
+    required bool correctForSnap,
   }) : super(
           key: key,
           delegate: delegate,
           floating: true,
           controller: controller,
+          correctForSnap: correctForSnap,
         );
 
   @override
   _CustomRenderSliverPersistentHeaderForWidgetsMixin createRenderObject(
       BuildContext context) {
     return _RenderSliverFloatingPinnedPersistentHeaderForWidgets(
-      controller: controller,
-      snapConfiguration: delegate.snapConfiguration,
-      stretchConfiguration: delegate.stretchConfiguration,
-      showOnScreenConfiguration: delegate.showOnScreenConfiguration,
-    );
+        controller: controller,
+        snapConfiguration: delegate.snapConfiguration,
+        stretchConfiguration: delegate.stretchConfiguration,
+        showOnScreenConfiguration: delegate.showOnScreenConfiguration,
+        correctForSnap: correctForSnap);
   }
 
   @override
@@ -627,6 +647,7 @@ class _SliverFloatingPinnedPersistentHeader
     renderObject.snapConfiguration = delegate.snapConfiguration;
     renderObject.stretchConfiguration = delegate.stretchConfiguration;
     renderObject.showOnScreenConfiguration = delegate.showOnScreenConfiguration;
+    renderObject.correctForSnap = correctForSnap;
   }
 }
 
@@ -639,10 +660,12 @@ class _RenderSliverFloatingPersistentHeaderForWidgets
     FloatingHeaderSnapConfiguration? snapConfiguration,
     OverScrollHeaderStretchConfiguration? stretchConfiguration,
     PersistentHeaderShowOnScreenConfiguration? showOnScreenConfiguration,
+    required bool correctForSnap,
   }) : super(
           child: child,
           snapConfiguration: snapConfiguration,
           stretchConfiguration: stretchConfiguration,
           showOnScreenConfiguration: showOnScreenConfiguration,
+          correctForSnap: correctForSnap,
         );
 }

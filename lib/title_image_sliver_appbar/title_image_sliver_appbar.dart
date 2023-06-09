@@ -22,7 +22,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_sliver_appbar/sliver_header/persistant_header_animation.dart';
 import 'package:custom_sliver_appbar/sliver_header/sliver_header_render.dart';
-import '../sliver_header/fix_sliver_padding.dart';
 import '../sliver_header/clip_top.dart';
 import '../sliver_header/sliver_header.dart';
 import 'left_right_to_bottom_layout.dart';
@@ -53,6 +52,7 @@ class TextImageSliverAppBar extends StatefulWidget {
   final Tween<double>? tween;
   final EdgeInsets padding;
   final AppBarBackgroundBuilder? appBarBackgroundBuilder;
+  final bool correctForSnap;
 
   const TextImageSliverAppBar(
       {Key? key,
@@ -75,7 +75,8 @@ class TextImageSliverAppBar extends StatefulWidget {
       this.scrolledUnderElevation = 1.0,
       this.tween,
       this.padding = EdgeInsets.zero,
-      this.appBarBackgroundBuilder})
+      this.appBarBackgroundBuilder,
+      required this.correctForSnap})
       : super(key: key);
 
   @override
@@ -97,6 +98,7 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
     return CustomAdjustedSliverPersistentHeader(
       pinned: widget.pinned,
       floating: widget.floating,
+      correctForSnap: widget.correctForSnap,
       delegate: widget.lrTbFit == LrTbFit.no
           ? TextImageSliverPersistentHeaderDelegate(
               vsync: this,
@@ -187,6 +189,7 @@ class TextImageSliverPersistentHeaderDelegate
     required this.scrolledUnderElevation,
     this.tween,
     TickerProvider? vsync,
+    bool correctForNestedSnap = false,
   })  : _vsync = vsync,
         _minExtent = minExtent,
         _floatingExtent = floatingExtent,
