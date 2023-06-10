@@ -48,11 +48,11 @@ class TextImageSliverAppBar extends StatefulWidget {
   final double elevation;
   final double scrolledUnderElevation;
   final Color? backgroundColor;
-  final Color? scrolledUnderBackground;
+  final Color? scrolledUnderBackgroundColor;
   final Tween<double>? tween;
   final EdgeInsets padding;
   final AppBarBackgroundBuilder? appBarBackgroundBuilder;
-  final bool correctForSnap;
+  final bool? innerBoxIsScrolled;
 
   const TextImageSliverAppBar(
       {Key? key,
@@ -70,13 +70,13 @@ class TextImageSliverAppBar extends StatefulWidget {
       this.minExtent = 0.0,
       this.lrTbFit = LrTbFit.fit,
       this.backgroundColor,
-      this.scrolledUnderBackground,
+      this.scrolledUnderBackgroundColor,
       this.elevation = 0.0,
       this.scrolledUnderElevation = 1.0,
       this.tween,
       this.padding = EdgeInsets.zero,
       this.appBarBackgroundBuilder,
-      required this.correctForSnap})
+      this.innerBoxIsScrolled})
       : super(key: key);
 
   @override
@@ -98,12 +98,12 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
     return CustomAdjustedSliverPersistentHeader(
       pinned: widget.pinned,
       floating: widget.floating,
-      correctForSnap: widget.correctForSnap,
+      innerBoxIsScrolled: widget.innerBoxIsScrolled,
       delegate: widget.lrTbFit == LrTbFit.no
           ? TextImageSliverPersistentHeaderDelegate(
               vsync: this,
               backgroundColor: widget.backgroundColor,
-              scrolledUnderBackground: widget.scrolledUnderBackground,
+              scrolledUnderBackground: widget.scrolledUnderBackgroundColor,
               elevation: widget.elevation,
               scrolledUnderElevation: widget.scrolledUnderElevation,
               title: widget.title,
@@ -123,7 +123,7 @@ class _TextImageSliverAppBarState extends State<TextImageSliverAppBar>
           : LeftRightToBottomTextImageSliverPersistentHeaderDelegate(
               vsync: this,
               backgroundColor: widget.backgroundColor,
-              scrolledUnderBackground: widget.scrolledUnderBackground,
+              scrolledUnderBackground: widget.scrolledUnderBackgroundColor,
               elevation: widget.elevation,
               scrolledUnderElevation: widget.scrolledUnderElevation,
               title: widget.title,
@@ -196,8 +196,8 @@ class TextImageSliverPersistentHeaderDelegate
         bottomHeight = bottom?.preferredSize.height ?? 0.0;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent,
-      bool scrolledContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     if (shrinkOffset > maxExtent - minExtent) {
       shrinkOffset = maxExtent - minExtent;
     }
@@ -332,7 +332,7 @@ class TextImageSliverPersistentHeaderDelegate
     if (builder != null) {
       return builder(
           context: context,
-          scrolledUnder: scrolledContent,
+          scrolledUnder: overlapsContent,
           padding: padding,
           safeTopPadding: safeTop,
           child: w);
@@ -342,8 +342,8 @@ class TextImageSliverPersistentHeaderDelegate
       }
 
       return Material(
-          elevation: scrolledContent ? scrolledUnderElevation : elevation,
-          color: scrolledContent ? scrolledUnderBackground : backgroundColor,
+          elevation: overlapsContent ? scrolledUnderElevation : elevation,
+          color: overlapsContent ? scrolledUnderBackground : backgroundColor,
           child: w);
     }
   }
@@ -428,8 +428,8 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
   }
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent,
-      bool scrolledContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     if (shrinkOffset > maxExtent - minExtent) {
       shrinkOffset = maxExtent - minExtent;
     }
@@ -572,7 +572,7 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
       return builder(
           context: context,
           padding: padding,
-          scrolledUnder: scrolledContent,
+          scrolledUnder: overlapsContent,
           safeTopPadding: safeTop,
           child: w);
     } else {
@@ -584,8 +584,8 @@ class LeftRightToBottomTextImageSliverPersistentHeaderDelegate
       }
 
       return Material(
-          elevation: scrolledContent ? scrolledUnderElevation : elevation,
-          color: scrolledContent ? scrolledUnderBackground : backgroundColor,
+          elevation: overlapsContent ? scrolledUnderElevation : elevation,
+          color: overlapsContent ? scrolledUnderBackground : backgroundColor,
           child: w);
     }
   }

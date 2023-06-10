@@ -28,14 +28,14 @@ class SnapController extends StatefulWidget {
   final CustomAdjustedSliverPersistentHeaderDelegate delegate;
   final bool pinned;
   final bool floating;
-  final bool correctForSnap;
+  final bool? innerBoxIsScrolled;
 
   const SnapController({
     Key? key,
     required this.delegate,
     this.pinned = false,
     this.floating = false,
-    required this.correctForSnap,
+    this.innerBoxIsScrolled,
   }) : super(key: key);
 
   @override
@@ -74,13 +74,13 @@ class _SnapControllerState extends State<SnapController>
       return _SliverFloatingPinnedPersistentHeader(
         delegate: widget.delegate,
         controller: _controller,
-        correctForSnap: widget.correctForSnap,
+        innerBoxIsScrolled: widget.innerBoxIsScrolled,
       );
     } else {
       return _SliverFloatingPersistentHeader(
         delegate: widget.delegate,
         controller: _controller,
-        correctForSnap: widget.correctForSnap,
+        innerBoxIsScrolled: widget.innerBoxIsScrolled,
       );
     }
   }
@@ -112,8 +112,7 @@ abstract class CustomAdjustedSliverPersistentHeaderDelegate {
   /// otherwise, but that is not guaranteed. See [NestedScrollView] for an
   /// example of a case where `overlapsContent`'s value can be unrelated to
   /// `shrinkOffset`.
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent,
-      bool scrolledContent);
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent);
 
   /// The smallest size to allow the header to reach, when it shrinks at the
   /// start of the viewport.
@@ -205,7 +204,7 @@ class CustomAdjustedSliverPersistentHeader extends StatelessWidget {
     required this.delegate,
     this.pinned = false,
     this.floating = false,
-    this.correctForSnap = false,
+    this.innerBoxIsScrolled,
   }) : super(key: key);
 
   /// Configuration for the sliver's layout.
@@ -236,7 +235,7 @@ class CustomAdjustedSliverPersistentHeader extends StatelessWidget {
   /// ignored unless [floating] is true.
   final bool floating;
 
-  final bool correctForSnap;
+  final bool? innerBoxIsScrolled;
 
   @override
   Widget build(BuildContext context) {
@@ -245,12 +244,14 @@ class CustomAdjustedSliverPersistentHeader extends StatelessWidget {
           delegate: delegate,
           pinned: true,
           floating: true,
-          correctForSnap: correctForSnap);
+          innerBoxIsScrolled: innerBoxIsScrolled);
     }
     if (pinned) return _SliverPinnedPersistentHeader(delegate: delegate);
     if (floating) {
       return SnapController(
-          delegate: delegate, floating: true, correctForSnap: correctForSnap);
+          delegate: delegate,
+          floating: true,
+          innerBoxIsScrolled: innerBoxIsScrolled);
     }
     return _SliverScrollingPersistentHeader(delegate: delegate);
   }
@@ -388,16 +389,15 @@ class _SliverPersistentHeaderElement extends RenderObjectElement {
 
   Element? child;
 
-  void _build(double shrinkOffset, bool overlapsContent, bool scrolledContent) {
+  void _build(double shrinkOffset, bool overlapsContent) {
     owner!.buildScope(this, () {
       child = updateChild(
         child,
         floating
             ? _FloatingHeader(
-                child: widget.delegate.build(
-                    this, shrinkOffset, overlapsContent, scrolledContent))
-            : widget.delegate
-                .build(this, shrinkOffset, overlapsContent, scrolledContent),
+                child:
+                    widget.delegate.build(this, shrinkOffset, overlapsContent))
+            : widget.delegate.build(this, shrinkOffset, overlapsContent),
         null,
       );
     });
@@ -440,13 +440,13 @@ abstract class _SliverPersistentHeaderRenderObjectWidget
       required this.delegate,
       this.floating = false,
       this.controller,
-      required this.correctForSnap})
+      this.innerBoxIsScrolled})
       : super(key: key);
 
   final CustomAdjustedSliverPersistentHeaderDelegate delegate;
   final bool floating;
   final AnimationController? controller;
-  final bool correctForSnap;
+  final bool? innerBoxIsScrolled;
 
   @override
   _SliverPersistentHeaderElement createElement() =>
@@ -484,10 +484,9 @@ mixin _CustomRenderSliverPersistentHeaderForWidgetsMixin
   // AnimationController? get _controller => _element!.widget.controller;
 
   @override
-  void updateChild(
-      double shrinkOffset, bool overlapsContent, bool scrolledContent) {
+  void updateChild(double shrinkOffset, bool overlapsContent) {
     assert(_element != null);
-    _element!._build(shrinkOffset, overlapsContent, scrolledContent);
+    _element!._build(shrinkOffset, overlapsContent);
   }
 
   @protected
@@ -501,10 +500,11 @@ class _SliverScrollingPersistentHeader
   const _SliverScrollingPersistentHeader({
     Key? key,
     required CustomAdjustedSliverPersistentHeaderDelegate delegate,
+    bool? innerBoxIsScrolled,
   }) : super(
           key: key,
           delegate: delegate,
-          correctForSnap: false,
+          innerBoxIsScrolled: innerBoxIsScrolled,
         );
 
   @override
@@ -533,7 +533,11 @@ class _SliverPinnedPersistentHeader
   const _SliverPinnedPersistentHeader({
     Key? key,
     required CustomAdjustedSliverPersistentHeaderDelegate delegate,
-  }) : super(key: key, delegate: delegate, correctForSnap: false);
+    bool? innerBoxIsScrolled,
+  }) : super(
+            key: key,
+            delegate: delegate,
+            innerBoxIsScrolled: innerBoxIsScrolled);
 
   @override
   _CustomRenderSliverPersistentHeaderForWidgetsMixin createRenderObject(
@@ -565,13 +569,13 @@ class _SliverFloatingPersistentHeader
     Key? key,
     required CustomAdjustedSliverPersistentHeaderDelegate delegate,
     required AnimationController controller,
-    required bool correctForSnap,
+    bool? innerBoxIsScrolled,
   }) : super(
             key: key,
             delegate: delegate,
             floating: true,
             controller: controller,
-            correctForSnap: correctForSnap);
+            innerBoxIsScrolled: innerBoxIsScrolled);
 
   @override
   _CustomRenderSliverPersistentHeaderForWidgetsMixin createRenderObject(
@@ -581,7 +585,7 @@ class _SliverFloatingPersistentHeader
         snapConfiguration: delegate.snapConfiguration,
         stretchConfiguration: delegate.stretchConfiguration,
         showOnScreenConfiguration: delegate.showOnScreenConfiguration,
-        correctForSnap: correctForSnap);
+        innerBoxIsScrolled: innerBoxIsScrolled);
   }
 
   @override
@@ -591,7 +595,7 @@ class _SliverFloatingPersistentHeader
     renderObject.snapConfiguration = delegate.snapConfiguration;
     renderObject.stretchConfiguration = delegate.stretchConfiguration;
     renderObject.showOnScreenConfiguration = delegate.showOnScreenConfiguration;
-    renderObject.correctForSnap = correctForSnap;
+    renderObject.innerBoxIsScrolled = innerBoxIsScrolled;
   }
 }
 
@@ -604,14 +608,14 @@ class _RenderSliverFloatingPinnedPersistentHeaderForWidgets
     FloatingHeaderSnapConfiguration? snapConfiguration,
     OverScrollHeaderStretchConfiguration? stretchConfiguration,
     PersistentHeaderShowOnScreenConfiguration? showOnScreenConfiguration,
-    required bool correctForSnap,
+    bool? innerBoxIsScrolled,
   }) : super(
             child: child,
             controller: controller,
             snapConfiguration: snapConfiguration,
             stretchConfiguration: stretchConfiguration,
             showOnScreenConfiguration: showOnScreenConfiguration,
-            correctForSnap: correctForSnap);
+            innerBoxIsScrolled: innerBoxIsScrolled);
 }
 
 class _SliverFloatingPinnedPersistentHeader
@@ -620,13 +624,13 @@ class _SliverFloatingPinnedPersistentHeader
     Key? key,
     required CustomAdjustedSliverPersistentHeaderDelegate delegate,
     required AnimationController controller,
-    required bool correctForSnap,
+    bool? innerBoxIsScrolled,
   }) : super(
           key: key,
           delegate: delegate,
           floating: true,
           controller: controller,
-          correctForSnap: correctForSnap,
+          innerBoxIsScrolled: innerBoxIsScrolled,
         );
 
   @override
@@ -637,7 +641,7 @@ class _SliverFloatingPinnedPersistentHeader
         snapConfiguration: delegate.snapConfiguration,
         stretchConfiguration: delegate.stretchConfiguration,
         showOnScreenConfiguration: delegate.showOnScreenConfiguration,
-        correctForSnap: correctForSnap);
+        innerBoxIsScrolled: innerBoxIsScrolled);
   }
 
   @override
@@ -647,7 +651,7 @@ class _SliverFloatingPinnedPersistentHeader
     renderObject.snapConfiguration = delegate.snapConfiguration;
     renderObject.stretchConfiguration = delegate.stretchConfiguration;
     renderObject.showOnScreenConfiguration = delegate.showOnScreenConfiguration;
-    renderObject.correctForSnap = correctForSnap;
+    renderObject.innerBoxIsScrolled = innerBoxIsScrolled;
   }
 }
 
@@ -660,12 +664,12 @@ class _RenderSliverFloatingPersistentHeaderForWidgets
     FloatingHeaderSnapConfiguration? snapConfiguration,
     OverScrollHeaderStretchConfiguration? stretchConfiguration,
     PersistentHeaderShowOnScreenConfiguration? showOnScreenConfiguration,
-    required bool correctForSnap,
+    bool? innerBoxIsScrolled,
   }) : super(
           child: child,
           snapConfiguration: snapConfiguration,
           stretchConfiguration: stretchConfiguration,
           showOnScreenConfiguration: showOnScreenConfiguration,
-          correctForSnap: correctForSnap,
+          innerBoxIsScrolled: innerBoxIsScrolled,
         );
 }

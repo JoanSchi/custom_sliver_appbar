@@ -230,12 +230,13 @@ class _ExampleState extends State<Example> {
           body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           // These are the slivers that show up in the "outer" scroll view.
+
           return <Widget>[
             // SliverOverlapAbsorber(
             //   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
             //   sliver:
             TextImageSliverAppBar(
-              correctForSnap: true,
+              innerBoxIsScrolled: innerBoxIsScrolled,
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
               // appBarBackgroundBuilder: builderBackground,
               minExtent: orientation == Orientation.portrait
@@ -250,7 +251,8 @@ class _ExampleState extends State<Example> {
               tween: orientation == Orientation.portrait
                   ? Tween(begin: 42, end: 36)
                   : null,
-              scrolledUnderBackground: const Color.fromARGB(255, 236, 247, 251),
+              scrolledUnderBackgroundColor:
+                  const Color.fromARGB(255, 236, 247, 251),
               lrTbFit: orientation == Orientation.portrait
                   ? optionsPortrait.lrTbFit
                   : optionsLandscape.lrTbFit,
@@ -439,11 +441,10 @@ class _ExampleState extends State<Example> {
       required double safeTopPadding,
       required bool scrolledUnder,
       Widget? child}) {
+    final theme = Theme.of(context);
     const leftPadding = 56.0;
     return Material(
-        color: scrolledUnder
-            ? const Color.fromARGB(255, 254, 252, 245)
-            : Colors.white,
+        color: scrolledUnder ? theme.colorScheme.surface : Colors.white,
         shape: ShapeBorderLbRbRounded(
           topPadding: safeTopPadding,
           leftInsets: leftPadding,

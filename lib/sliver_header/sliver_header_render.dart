@@ -209,8 +209,7 @@ abstract class CustomRenderSliverPersistentHeader extends RenderSliver
   ///
   /// Any time this method would mutate the child, call [markNeedsLayout].
   @protected
-  void updateChild(
-      double shrinkOffset, bool overlapsContent, bool scrolledContent) {}
+  void updateChild(double shrinkOffset, bool overlapsContent) {}
 
   @override
   void markNeedsLayout() {
@@ -229,15 +228,18 @@ abstract class CustomRenderSliverPersistentHeader extends RenderSliver
   ///
   /// The `overlapsContent` argument is passed to [updateChild].
   @protected
-  void layoutChild(double scrollOffset, double maxExtent,
-      {bool overlapsContent = false, bool scrolledContent = false}) {
+  void layoutChild(
+    double scrollOffset,
+    double maxExtent, {
+    bool overlapsContent = false,
+  }) {
     final double shrinkOffset = math.min(scrollOffset, maxExtent);
     if (_needsUpdateChild ||
         _lastShrinkOffset != shrinkOffset ||
         _lastOverlapsContent != overlapsContent) {
       invokeLayoutCallback<SliverConstraints>((SliverConstraints constraints) {
         assert(constraints == this.constraints);
-        updateChild(shrinkOffset, overlapsContent, scrolledContent);
+        updateChild(shrinkOffset, overlapsContent);
       });
       _lastShrinkOffset = shrinkOffset;
       _lastOverlapsContent = overlapsContent;
@@ -571,7 +573,7 @@ abstract class CustomRenderSliverFloatingPersistentHeader
       this.snapConfiguration,
       OverScrollHeaderStretchConfiguration? stretchConfiguration,
       required this.showOnScreenConfiguration,
-      required this.correctForSnap})
+      this.innerBoxIsScrolled})
       : _controller = controller,
         super(
           child: child,
@@ -579,7 +581,8 @@ abstract class CustomRenderSliverFloatingPersistentHeader
         ) {
     //_controller?.addListener(animationChange);
   }
-  bool correctForSnap;
+  bool? innerBoxIsScrolled;
+
   late Animation<double> _animation;
   double? _lastActualScrollOffset;
   double? _effectiveScrollOffset;
@@ -766,19 +769,29 @@ abstract class CustomRenderSliverFloatingPersistentHeader
       //Added by Joan removing injectors from NestedScrollView
       // debugPrint(
       //     '----------userScrollDirection: ${constraints.userScrollDirection} _effectiveScrollOffset ${_effectiveScrollOffset!.toInt()} scrollOffset ${constraints.scrollOffset.toInt()} delta ${(constraints.scrollOffset - _effectiveScrollOffset!).toInt()}');
-      if (correctForSnap &&
-          constraints.userScrollDirection == ScrollDirection.forward &&
-          _effectiveScrollOffset! < constraints.scrollOffset) {
-        delta = 0.0;
+      if (constraints.userScrollDirection == ScrollDirection.forward) {
+        if (_effectiveScrollOffset! > constraints.scrollOffset) {
+          // If true then _effectiveScrollOffset - delta is in general sligtly lower than constraints.scrollOffset, while there is no overlap.
+          // In this case it is necesssary to make _effectiveScrollOffset equal to constraints.scrollOffset, overlap is set to false by _effectiveScrollOffset! < constraints.scrollOffset
+          _effectiveScrollOffset = constraints.scrollOffset;
+        }
+      } else {
+        _effectiveScrollOffset = _effectiveScrollOffset! - delta;
       }
 
-      _effectiveScrollOffset = clampDouble(
-          _effectiveScrollOffset! - delta, 0.0, constraints.scrollOffset);
+      _effectiveScrollOffset =
+          clampDouble(_effectiveScrollOffset!, 0.0, constraints.scrollOffset);
     } else {
       _effectiveScrollOffset = constraints.scrollOffset;
     }
-    final bool overlapsContent =
-        _effectiveScrollOffset! < constraints.scrollOffset;
+
+    final bool overlapsContent;
+    if (innerBoxIsScrolled == null) {
+      overlapsContent = maxExtent - minExtent < constraints.scrollOffset;
+    } else {
+      overlapsContent = (innerBoxIsScrolled ?? false) ||
+          _effectiveScrollOffset! < constraints.scrollOffset;
+    }
 
     layoutChild(
       _effectiveScrollOffset!,
@@ -786,6 +799,7 @@ abstract class CustomRenderSliverFloatingPersistentHeader
       overlapsContent: overlapsContent,
     );
     _childPosition = updateGeometry();
+
     _lastActualScrollOffset = constraints.scrollOffset;
   }
 
@@ -901,14 +915,14 @@ abstract class RenderSliverFloatingPinnedPersistentHeader
     FloatingHeaderSnapConfiguration? snapConfiguration,
     OverScrollHeaderStretchConfiguration? stretchConfiguration,
     PersistentHeaderShowOnScreenConfiguration? showOnScreenConfiguration,
-    required bool correctForSnap,
+    bool? innerBoxIsScrolled,
   }) : super(
           child: child,
           controller: controller,
           snapConfiguration: snapConfiguration,
           stretchConfiguration: stretchConfiguration,
           showOnScreenConfiguration: showOnScreenConfiguration,
-          correctForSnap: correctForSnap,
+          innerBoxIsScrolled: innerBoxIsScrolled,
         );
 
   @override
