@@ -447,10 +447,13 @@ abstract class CustomRenderSliverPinnedPersistentHeader
     OverScrollHeaderStretchConfiguration? stretchConfiguration,
     this.showOnScreenConfiguration =
         const PersistentHeaderShowOnScreenConfiguration(),
+    this.innerBoxIsScrolled,
   }) : super(
           child: child,
           stretchConfiguration: stretchConfiguration,
         );
+
+  bool? innerBoxIsScrolled;
 
   /// Specifies the persistent header's behavior when `showOnScreen` is called.
   ///
@@ -461,6 +464,7 @@ abstract class CustomRenderSliverPinnedPersistentHeader
   @override
   void performLayout() {
     final SliverConstraints constraints = this.constraints;
+    final double minExtent = this.minExtent;
     final double maxExtent = this.maxExtent;
     final bool overlapsContent = constraints.overlap > 0.0;
     layoutChild(constraints.scrollOffset, maxExtent,
@@ -469,7 +473,7 @@ abstract class CustomRenderSliverPinnedPersistentHeader
         math.max(0, constraints.remainingPaintExtent - constraints.overlap);
     final double layoutExtent = clampDouble(
         maxExtent - constraints.scrollOffset,
-        0.0,
+        innerBoxIsScrolled == null ? 0.0 : minExtent,
         effectiveRemainingPaintExtent);
     final double stretchOffset =
         stretchConfiguration != null ? constraints.overlap.abs() : 0.0;
@@ -655,16 +659,24 @@ abstract class CustomRenderSliverFloatingPersistentHeader
     if (stretchConfiguration != null && _childPosition == 0.0) {
       stretchOffset += constraints.overlap.abs();
     }
+    final double minExtent = this.minExtent;
     final double maxExtent = this.maxExtent;
+
     final double paintExtent = maxExtent - _effectiveScrollOffset!;
     final double layoutExtent = maxExtent - constraints.scrollOffset;
     geometry = SliverGeometry(
       scrollExtent: maxExtent,
       paintOrigin: math.min(constraints.overlap, 0.0),
-      paintExtent:
-          clampDouble(paintExtent, 0.0, constraints.remainingPaintExtent),
-      layoutExtent:
-          clampDouble(layoutExtent, 0.0, constraints.remainingPaintExtent),
+      //Joan: LayoutExtent should be equal or greater than minExtent
+      paintExtent: clampDouble(
+          paintExtent,
+          innerBoxIsScrolled == null ? 0.0 : minExtent,
+          constraints.remainingPaintExtent),
+      //Joan: LayoutExtent or paintExtent should be 0.0 in a normal CustomScrollView and equal or greater than minExtent nestedScrollView, otherwise a short scrollview can be scrolled under the appbar
+      layoutExtent: clampDouble(
+          layoutExtent,
+          innerBoxIsScrolled == null ? 0.0 : minExtent,
+          constraints.remainingPaintExtent),
       maxPaintExtent: maxExtent + stretchOffset,
       hasVisualOverflow:
           true, // Conservatively say we do have overflow to avoid complexity.
@@ -945,7 +957,9 @@ abstract class RenderSliverFloatingPinnedPersistentHeader
       scrollExtent: maxExtent,
       paintOrigin: math.min(constraints.overlap, 0.0),
       paintExtent: clampedPaintExtent,
-      layoutExtent: clampDouble(layoutExtent, 0.0, clampedPaintExtent),
+      //Joan: LayoutExtent should be equal or greater than minExtent
+      layoutExtent: clampDouble(layoutExtent,
+          innerBoxIsScrolled == null ? 0.0 : minExtent, clampedPaintExtent),
       maxPaintExtent: maxExtent + stretchOffset,
       maxScrollObstructionExtent: minExtent,
       hasVisualOverflow:

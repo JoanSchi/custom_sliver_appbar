@@ -16,6 +16,7 @@
 // along with custom_sliver_appbar.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'dart:ui';
+import 'package:custom_sliver_appbar/nested_scroll_view.dart';
 import 'package:custom_sliver_appbar/shapeborder_appbar/shapeborder_lb_rb_rounded.dart';
 import 'package:custom_sliver_appbar/sliver_header/center_y.dart';
 import 'package:custom_sliver_appbar/sliver_header/clip_top.dart';
@@ -343,11 +344,11 @@ class _ExampleState extends State<Example> {
                     //   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                     //       context),
                     // ),
-                    const SliverToBoxAdapter(
-                        child: Padding(
-                      padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-                      child: About(),
-                    )),
+                    // const SliverToBoxAdapter(
+                    //     child: Padding(
+                    //   padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+                    //   child: About(),
+                    // )),
                     SliverPadding(
                       padding: const EdgeInsets.all(8.0),
                       // In this example, the inner scroll view has
@@ -372,7 +373,7 @@ class _ExampleState extends State<Example> {
                           // specifies how many children this inner list
                           // has. In this example, each tab has a list of
                           // exactly 30 items, but this is arbitrary.
-                          childCount: 60,
+                          childCount: 30,
                         ),
                       ),
                     ),

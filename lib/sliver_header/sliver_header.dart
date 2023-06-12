@@ -556,11 +556,12 @@ class _RenderSliverPinnedPersistentHeaderForWidgets
     RenderBox? child,
     OverScrollHeaderStretchConfiguration? stretchConfiguration,
     PersistentHeaderShowOnScreenConfiguration? showOnScreenConfiguration,
+    bool? innerBoxIsScrolled,
   }) : super(
-          child: child,
-          stretchConfiguration: stretchConfiguration,
-          showOnScreenConfiguration: showOnScreenConfiguration,
-        );
+            child: child,
+            stretchConfiguration: stretchConfiguration,
+            showOnScreenConfiguration: showOnScreenConfiguration,
+            innerBoxIsScrolled: innerBoxIsScrolled);
 }
 
 class _SliverFloatingPersistentHeader
